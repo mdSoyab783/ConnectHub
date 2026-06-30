@@ -2,20 +2,22 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const generateToken = require("../utils/generateToken");
 
+// ==========================
 // Register User
+// ==========================
 const registerUser = async (req, res) => {
   try {
     const { fullName, username, email, password } = req.body;
 
-    // Validation
+    // Validate input
     if (!fullName || !username || !email || !password) {
       return res.status(400).json({
         success: false,
-        message: "All fields are required."
+        message: "Please fill all fields."
       });
     }
 
-    // Check email
+    // Check if email already exists
     const emailExists = await User.findOne({ email });
 
     if (emailExists) {
@@ -25,7 +27,7 @@ const registerUser = async (req, res) => {
       });
     }
 
-    // Check username
+    // Check if username already exists
     const usernameExists = await User.findOne({ username });
 
     if (usernameExists) {
@@ -35,10 +37,10 @@ const registerUser = async (req, res) => {
       });
     }
 
-    // Encrypt password
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
+    // Create new user
     const user = await User.create({
       fullName,
       username,
@@ -46,11 +48,18 @@ const registerUser = async (req, res) => {
       password: hashedPassword
     });
 
+    // Send response (without password)
     res.status(201).json({
       success: true,
-      message: "Registration successful.",
+      message: "Registration Successful",
       token: generateToken(user._id),
-      user
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        username: user.username,
+        email: user.email,
+        profileImage: user.profileImage
+      }
     });
 
   } catch (error) {
@@ -61,12 +70,14 @@ const registerUser = async (req, res) => {
   }
 };
 
+// ==========================
 // Login User
+// ==========================
 const loginUser = async (req, res) => {
   try {
-
     const { email, password } = req.body;
 
+    // Find user
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -76,6 +87,7 @@ const loginUser = async (req, res) => {
       });
     }
 
+    // Compare password
     const match = await bcrypt.compare(password, user.password);
 
     if (!match) {
@@ -85,26 +97,25 @@ const loginUser = async (req, res) => {
       });
     }
 
-    res.status(201).json({
-        success: true,
-        message: "Registration Successful",
-        token: generateToken(user._id),
-        user: {
-           id: user._id,
-           fullName: user.fullName,
-           username: user.username,
-           email: user.email,
-           profileImage: user.profileImage
-     }
+    // Send response (without password)
+    res.status(200).json({
+      success: true,
+      message: "Login Successful",
+      token: generateToken(user._id),
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        username: user.username,
+        email: user.email,
+        profileImage: user.profileImage
+      }
     });
 
   } catch (error) {
-
     res.status(500).json({
       success: false,
       message: error.message
     });
-
   }
 };
 
