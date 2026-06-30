@@ -85,11 +85,17 @@ const loginUser = async (req, res) => {
       });
     }
 
-    res.status(200).json({
-      success: true,
-      message: "Login successful.",
-      token: generateToken(user._id),
-      user
+    res.status(201).json({
+        success: true,
+        message: "Registration Successful",
+        token: generateToken(user._id),
+        user: {
+           id: user._id,
+           fullName: user.fullName,
+           username: user.username,
+           email: user.email,
+           profileImage: user.profileImage
+     }
     });
 
   } catch (error) {
