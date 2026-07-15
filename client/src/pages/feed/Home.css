@@ -1,0 +1,31 @@
+.home-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  max-width: 1300px;
+  margin: 20px auto;
+  padding: 0 20px;
+}
+
+.feed-section {
+  min-width: 0;
+}
+
+.sidebar-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: sticky;
+  top: 80px;
+  align-self: start;
+}
+
+@media (max-width: 900px) {
+  .home-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar-section {
+    position: static;
+  }
+}

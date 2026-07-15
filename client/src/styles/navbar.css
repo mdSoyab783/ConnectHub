@@ -1,0 +1,86 @@
+.navbar{
+
+height:70px;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:0 25px;
+
+background:white;
+
+border-bottom:1px solid #ddd;
+
+position:fixed;
+
+top:0;
+
+left:0;
+
+right:0;
+
+z-index:100;
+
+}
+
+.logo{
+
+font-size:24px;
+
+font-weight:bold;
+
+color:#2563EB;
+
+}
+
+.navbar input{
+
+width:320px;
+
+padding:10px;
+
+border-radius:8px;
+
+border:1px solid #ddd;
+
+}
+
+.nav-right{
+
+display:flex;
+
+gap:15px;
+
+align-items:center;
+
+}
+.notification-wrapper {
+  position: relative;
+}
+
+.notification-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  position: relative;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -8px;
+  background: #ef4444;
+  color: white;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 11px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}

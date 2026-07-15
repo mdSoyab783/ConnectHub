@@ -1,0 +1,58 @@
+.post-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.profile-image {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.post-body p {
+  margin-bottom: 15px;
+}
+
+.post-image {
+  width: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.post-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  color: #555;
+}
+
+.post-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.post-actions button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.post-actions button:hover {
+  background: #1d4ed8;
+}
