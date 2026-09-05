@@ -1,4 +1,3 @@
-
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
@@ -31,10 +30,24 @@ connectDB();
 const app = express();
 
 // ==============================
-// Middleware
+// CORS
 // ==============================
 
-app.use(cors());
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://connect-hub-one-sigma.vercel.app",
+];
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  })
+);
+
+// ==============================
+// Middleware
+// ==============================
 
 app.use(express.json());
 
@@ -69,28 +82,47 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/conversations", conversationRoutes);
 app.use("/api/messages", messageRoutes);
 
+// ==============================
 // Static Uploads
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// ==============================
 
-console.log("Uploads Path:", path.join(__dirname, "uploads"));
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads"))
+);
 
+console.log(
+  "Uploads Path:",
+  path.join(__dirname, "uploads")
+);
+
+// ==============================
 // Error Handler
+// ==============================
+
 app.use(errorHandler);
 
 // ==============================
-// HTTP + SOCKET SERVER
+// HTTP SERVER
 // ==============================
 
 const server = http.createServer(app);
 
+// ==============================
+// SOCKET.IO
+// ==============================
+
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
   },
 });
 
+// ==============================
 // Store Online Users
+// ==============================
+
 const onlineUsers = new Map();
 
 io.on("connection", (socket) => {
@@ -111,64 +143,105 @@ io.on("connection", (socket) => {
 
     console.log("✅ User Joined:", userId);
 
-    io.emit("onlineUsers", [...onlineUsers.keys()]);
-  });
-
-  // ==========================
-  // CHAT EVENTS
-  // ==========================
-
-  socket.on("joinConversation", (conversationId) => {
-
-    if (!conversationId) return;
-
-    socket.join(conversationId);
-
-    console.log(
-      `💬 ${socket.id} joined conversation ${conversationId}`
+    io.emit(
+      "onlineUsers",
+      [...onlineUsers.keys()]
     );
   });
 
-  socket.on("leaveConversation", (conversationId) => {
+  // ==========================
+  // JOIN CONVERSATION
+  // ==========================
 
-    socket.leave(conversationId);
+  socket.on(
+    "joinConversation",
+    (conversationId) => {
 
-    console.log(
-      `🚪 ${socket.id} left conversation ${conversationId}`
-    );
-  });
+      if (!conversationId) return;
+
+      socket.join(conversationId);
+
+      console.log(
+        `💬 ${socket.id} joined conversation ${conversationId}`
+      );
+    }
+  );
+
+  // ==========================
+  // LEAVE CONVERSATION
+  // ==========================
+
+  socket.on(
+    "leaveConversation",
+    (conversationId) => {
+
+      if (!conversationId) return;
+
+      socket.leave(conversationId);
+
+      console.log(
+        `🚪 ${socket.id} left conversation ${conversationId}`
+      );
+    }
+  );
+
+  // ==========================
+  // SEND MESSAGE
+  // ==========================
 
   socket.on("sendMessage", (message) => {
 
-    socket.to(message.conversation).emit(
-      "receiveMessage",
-      message
-    );
+    if (!message?.conversation) return;
+
+    socket
+      .to(message.conversation)
+      .emit(
+        "receiveMessage",
+        message
+      );
 
     console.log(
       `📩 Message sent to room ${message.conversation}`
     );
   });
-// ==========================
-// TYPING
-// ==========================
 
-socket.on("typing", ({ conversationId, user }) => {
+  // ==========================
+  // TYPING
+  // ==========================
 
-  socket.to(conversationId).emit(
-    "userTyping",
-    user
+  socket.on(
+    "typing",
+    ({ conversationId, user }) => {
+
+      if (!conversationId) return;
+
+      socket
+        .to(conversationId)
+        .emit(
+          "userTyping",
+          user
+        );
+    }
   );
 
-});
+  // ==========================
+  // STOP TYPING
+  // ==========================
 
-socket.on("stopTyping", ({ conversationId }) => {
+  socket.on(
+    "stopTyping",
+    ({ conversationId }) => {
 
-  socket.to(conversationId).emit(
-    "userStoppedTyping"
+      if (!conversationId) return;
+
+      socket
+        .to(conversationId)
+        .emit(
+          "userStoppedTyping"
+        );
+    }
   );
 
-});
   // ==========================
   // DISCONNECT
   // ==========================
@@ -177,28 +250,53 @@ socket.on("stopTyping", ({ conversationId }) => {
 
     if (socket.userId) {
 
-      onlineUsers.delete(socket.userId);
+      onlineUsers.delete(
+        socket.userId
+      );
 
-      console.log("🔴 User Disconnected:", socket.userId);
+      console.log(
+        "🔴 User Disconnected:",
+        socket.userId
+      );
 
-      io.emit("onlineUsers", [...onlineUsers.keys()]);
+      io.emit(
+        "onlineUsers",
+        [...onlineUsers.keys()]
+      );
     }
 
-    console.log("❌ Socket Closed:", socket.id);
+    console.log(
+      "❌ Socket Closed:",
+      socket.id
+    );
   });
 
 });
 
+// ==============================
 // Make available inside controllers
+// ==============================
+
 app.set("io", io);
-app.set("onlineUsers", onlineUsers);
+
+app.set(
+  "onlineUsers",
+  onlineUsers
+);
 
 // ==============================
 // START SERVER
 // ==============================
 
-const PORT = process.env.PORT || 5000;
+const PORT =
+  process.env.PORT || 5000;
 
-server.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+server.listen(
+  PORT,
+  "0.0.0.0",
+  () => {
+    console.log(
+      `🚀 Server running on port ${PORT}`
+    );
+  }
+);
