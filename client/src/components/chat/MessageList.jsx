@@ -1175,7 +1175,7 @@ const MessageList = ({
                       {message.image && (
 
                         <img
-                          src={`http://localhost:3000${message.image}`}
+                          src={`https://connecthub-ad1z.onrender.com${message.image}`}
                           alt="message"
                           className="message-image"
                         />
@@ -1447,7 +1447,7 @@ const MessageList = ({
               {forwardMessageData.image && (
 
                 <img
-                  src={`http://localhost:3000${forwardMessageData.image}`}
+                  src={`https://connecthub-ad1z.onrender.com${forwardMessageData.image}`}
                   alt="Forward preview"
                   className="forward-preview-image"
                 />

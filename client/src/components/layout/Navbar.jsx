@@ -34,8 +34,6 @@ const Navbar = ({
 
       <div className="navbar-left">
 
-        {/* ConnectHub Logo */}
-
         <Link
           to="/"
           className="navbar-logo"
@@ -63,19 +61,21 @@ const Navbar = ({
 
 
         {/* =====================================
-    HOME
-===================================== */}
+            HOME
+        ===================================== */}
 
-<Link
-  to="/"
-  className="navbar-circle-button"
-  title="Home"
-  aria-label="Home"
->
-  <span className="navbar-home-icon">
-    🏠
-  </span>
-</Link>
+        <Link
+          to="/"
+          className="navbar-circle-button"
+          title="Home"
+          aria-label="Home"
+        >
+          <span className="navbar-home-icon">
+            🏠
+          </span>
+        </Link>
+
+
         {/* =====================================
             MESSENGER
         ===================================== */}
@@ -86,11 +86,9 @@ const Navbar = ({
           title="Messages"
           aria-label="Messages"
         >
-
           <span className="navbar-messenger-icon">
             💬
           </span>
-
         </Link>
 
 
@@ -125,7 +123,7 @@ const Navbar = ({
 
               {user?.profileImage ? (
                 <img
-                  src={`http://localhost:3000${user.profileImage}`}
+                  src={`${import.meta.env.VITE_SOCKET_URL || "http://localhost:3000"}${user.profileImage}`}
                   alt={
                     user?.fullName ||
                     "User"
@@ -144,8 +142,6 @@ const Navbar = ({
 
             </div>
 
-
-            {/* Small dropdown arrow */}
 
             <span className="navbar-profile-arrow">
               {showProfileMenu ? "⌃" : "⌄"}
@@ -173,7 +169,7 @@ const Navbar = ({
 
                   {user?.profileImage ? (
                     <img
-                      src={`http://localhost:3000${user.profileImage}`}
+                      src={`${import.meta.env.VITE_SOCKET_URL || "http://localhost:3000"}${user.profileImage}`}
                       alt={
                         user?.fullName ||
                         "User"

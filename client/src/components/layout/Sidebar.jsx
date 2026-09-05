@@ -59,7 +59,7 @@ const Sidebar = ({ closeSidebar }) => {
 
           {user?.profileImage ? (
             <img
-              src={`http://localhost:3000${user.profileImage}`}
+              src={`https://connecthub-ad1z.onrender.com${user.profileImage}`}
               alt={user?.fullName || "User"}
             />
           ) : (

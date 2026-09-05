@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "https://connecthub-ad1z.onrender.com";
 
 export const getImageUrl = (imagePath) => {
   if (!imagePath) {
