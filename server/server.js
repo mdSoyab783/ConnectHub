@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const morgan = require("morgan");
 const path = require("path");
+const fs = require("fs");
 const http = require("http");
 const { Server } = require("socket.io");
 
@@ -24,7 +25,31 @@ const connectDB = require("./config/db");
 // Load environment variables
 dotenv.config();
 
+// ==============================
+// Ensure Upload Directories Exist
+// ==============================
+
+const uploadDirectories = [
+  path.join(__dirname, "uploads"),
+  path.join(__dirname, "uploads", "profile"),
+  path.join(__dirname, "uploads", "cover"),
+  path.join(__dirname, "uploads", "posts"),
+];
+
+uploadDirectories.forEach((directory) => {
+  if (!fs.existsSync(directory)) {
+    fs.mkdirSync(directory, {
+      recursive: true,
+    });
+
+    console.log("📁 Created upload directory:", directory);
+  }
+});
+
+// ==============================
 // Connect Database
+// ==============================
+
 connectDB();
 
 const app = express();
@@ -41,7 +66,14 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: allowedOrigins,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    methods: [
+      "GET",
+      "POST",
+      "PUT",
+      "PATCH",
+      "DELETE",
+      "OPTIONS",
+    ],
   })
 );
 
@@ -51,7 +83,11 @@ app.use(
 
 app.use(express.json());
 
-app.use(express.urlencoded({ extended: true }));
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 
 app.use(morgan("dev"));
 
@@ -75,11 +111,17 @@ app.get("/api/health", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+
 app.use("/api/users", userRoutes);
+
 app.use("/api/posts", postRoutes);
+
 app.use("/api/comments", commentRoutes);
+
 app.use("/api/notifications", notificationRoutes);
+
 app.use("/api/conversations", conversationRoutes);
+
 app.use("/api/messages", messageRoutes);
 
 // ==============================
@@ -88,7 +130,9 @@ app.use("/api/messages", messageRoutes);
 
 app.use(
   "/uploads",
-  express.static(path.join(__dirname, "uploads"))
+  express.static(
+    path.join(__dirname, "uploads")
+  )
 );
 
 console.log(
@@ -127,7 +171,10 @@ const onlineUsers = new Map();
 
 io.on("connection", (socket) => {
 
-  console.log("🟢 User Connected:", socket.id);
+  console.log(
+    "🟢 User Connected:",
+    socket.id
+  );
 
   // ==========================
   // USER ONLINE
@@ -139,9 +186,15 @@ io.on("connection", (socket) => {
 
     socket.userId = userId;
 
-    onlineUsers.set(userId, socket.id);
+    onlineUsers.set(
+      userId,
+      socket.id
+    );
 
-    console.log("✅ User Joined:", userId);
+    console.log(
+      "✅ User Joined:",
+      userId
+    );
 
     io.emit(
       "onlineUsers",
@@ -159,7 +212,9 @@ io.on("connection", (socket) => {
 
       if (!conversationId) return;
 
-      socket.join(conversationId);
+      socket.join(
+        conversationId
+      );
 
       console.log(
         `💬 ${socket.id} joined conversation ${conversationId}`
@@ -177,7 +232,9 @@ io.on("connection", (socket) => {
 
       if (!conversationId) return;
 
-      socket.leave(conversationId);
+      socket.leave(
+        conversationId
+      );
 
       console.log(
         `🚪 ${socket.id} left conversation ${conversationId}`
@@ -189,21 +246,26 @@ io.on("connection", (socket) => {
   // SEND MESSAGE
   // ==========================
 
-  socket.on("sendMessage", (message) => {
+  socket.on(
+    "sendMessage",
+    (message) => {
 
-    if (!message?.conversation) return;
+      if (!message?.conversation) {
+        return;
+      }
 
-    socket
-      .to(message.conversation)
-      .emit(
-        "receiveMessage",
-        message
+      socket
+        .to(message.conversation)
+        .emit(
+          "receiveMessage",
+          message
+        );
+
+      console.log(
+        `📩 Message sent to room ${message.conversation}`
       );
-
-    console.log(
-      `📩 Message sent to room ${message.conversation}`
-    );
-  });
+    }
+  );
 
   // ==========================
   // TYPING
@@ -213,7 +275,9 @@ io.on("connection", (socket) => {
     "typing",
     ({ conversationId, user }) => {
 
-      if (!conversationId) return;
+      if (!conversationId) {
+        return;
+      }
 
       socket
         .to(conversationId)
@@ -232,7 +296,9 @@ io.on("connection", (socket) => {
     "stopTyping",
     ({ conversationId }) => {
 
-      if (!conversationId) return;
+      if (!conversationId) {
+        return;
+      }
 
       socket
         .to(conversationId)
@@ -246,38 +312,43 @@ io.on("connection", (socket) => {
   // DISCONNECT
   // ==========================
 
-  socket.on("disconnect", () => {
+  socket.on(
+    "disconnect",
+    () => {
 
-    if (socket.userId) {
+      if (socket.userId) {
 
-      onlineUsers.delete(
-        socket.userId
-      );
+        onlineUsers.delete(
+          socket.userId
+        );
+
+        console.log(
+          "🔴 User Disconnected:",
+          socket.userId
+        );
+
+        io.emit(
+          "onlineUsers",
+          [...onlineUsers.keys()]
+        );
+      }
 
       console.log(
-        "🔴 User Disconnected:",
-        socket.userId
-      );
-
-      io.emit(
-        "onlineUsers",
-        [...onlineUsers.keys()]
+        "❌ Socket Closed:",
+        socket.id
       );
     }
-
-    console.log(
-      "❌ Socket Closed:",
-      socket.id
-    );
-  });
-
+  );
 });
 
 // ==============================
 // Make available inside controllers
 // ==============================
 
-app.set("io", io);
+app.set(
+  "io",
+  io
+);
 
 app.set(
   "onlineUsers",
