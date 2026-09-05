@@ -18,7 +18,14 @@ const Navbar = () => {
       }}
     >
       {/* Logo */}
-      <h2 style={{ margin: 0 }}>ConnectHub</h2>
+      <h2
+        style={{
+          margin: 0,
+          color: "#2864e8",
+        }}
+      >
+        ConnectHub
+      </h2>
 
       {/* Right Side */}
       <div
@@ -28,20 +35,48 @@ const Navbar = () => {
           gap: "20px",
         }}
       >
-        <Link to="/" style={{ textDecoration: "none" }}>
+        <Link
+          to="/"
+          style={{
+            textDecoration: "none",
+          }}
+        >
           Home
         </Link>
 
-        <Link to="/profile" style={{ textDecoration: "none" }}>
+        <Link
+          to="/profile"
+          style={{
+            textDecoration: "none",
+          }}
+        >
           Profile
         </Link>
 
+        {/* Messenger */}
+        <Link
+          to="/chat"
+          style={{
+            textDecoration: "none",
+            fontSize: "24px",
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
+          }}
+          title="Messages"
+        >
+          💬
+        </Link>
+
+        {/* Notifications */}
         <NotificationBell />
 
+        {/* Username */}
         <span>
           {user?.fullName}
         </span>
 
+        {/* Logout */}
         <button onClick={logout}>
           Logout
         </button>

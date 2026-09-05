@@ -12,12 +12,6 @@ export const SocketProvider = ({ children }) => {
   const [onlineUsers, setOnlineUsers] = useState([]);
 
   useEffect(() => {
-    console.log("Socket User Object:");
-    console.dir(user);
-
-    console.log("User Keys:");
-    console.log(user ? Object.keys(user) : "No user");
-
     if (!user) return;
 
     const userId = user.id || user._id;
@@ -39,11 +33,29 @@ export const SocketProvider = ({ children }) => {
     };
   }, [user]);
 
+  // ==========================
+  // Conversation Helpers
+  // ==========================
+
+  const joinConversation = (conversationId) => {
+    if (!conversationId) return;
+
+    socket.emit("joinConversation", conversationId);
+  };
+
+  const leaveConversation = (conversationId) => {
+    if (!conversationId) return;
+
+    socket.emit("leaveConversation", conversationId);
+  };
+
   return (
     <SocketContext.Provider
       value={{
         socket,
         onlineUsers,
+        joinConversation,
+        leaveConversation,
       }}
     >
       {children}

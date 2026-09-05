@@ -4,6 +4,8 @@ import { useSocket } from "../../context/SocketContext";
 
 import PostCard from "./PostCard";
 
+import "./Feed.css";
+
 const Feed = ({ refreshTrigger }) => {
   const { socket } = useSocket();
 
@@ -29,60 +31,129 @@ const Feed = ({ refreshTrigger }) => {
     }
   };
 
+  // ===========================
   // Initial Load
+  // ===========================
   useEffect(() => {
     fetchPosts();
   }, [refreshTrigger]);
 
   // ===========================
-  // Real-time New Posts
+  // Real-time Events
   // ===========================
   useEffect(() => {
-  if (!socket) return;
+    if (!socket) return;
 
-  socket.on("newPost", (post) => {
-    setPosts((prev) => {
-      const exists = prev.some((p) => p._id === post._id);
+    // New post
+    socket.on("newPost", (post) => {
+      setPosts((prev) => {
+        const exists = prev.some(
+          (p) => p._id === post._id
+        );
 
-      if (exists) return prev;
+        if (exists) {
+          return prev;
+        }
 
-      return [post, ...prev];
+        return [post, ...prev];
+      });
     });
-  });
 
-  socket.on("postLiked", ({ postId, likes }) => {
-    setPosts((prev) =>
-      prev.map((post) =>
-        post._id === postId
-          ? {
-              ...post,
-              likes,
-            }
-          : post
-      )
-    );
-  });
+    // Post like update
+    socket.on("postLiked", ({ postId, likes }) => {
+      setPosts((prev) =>
+        prev.map((post) =>
+          post._id === postId
+            ? {
+                ...post,
+                likes,
+              }
+            : post
+        )
+      );
+    });
 
-  return () => {
-    socket.off("newPost");
-    socket.off("postLiked");
-  };
-}, [socket]);
+    return () => {
+      socket.off("newPost");
+      socket.off("postLiked");
+    };
+  }, [socket]);
 
+  // ===========================
+  // Loading
+  // ===========================
   if (loading) {
-    return <p>Loading posts...</p>;
+    return (
+      <div className="feed-state">
+        <div className="feed-spinner"></div>
+
+        <p>Loading posts...</p>
+      </div>
+    );
   }
 
+  // ===========================
+  // Error
+  // ===========================
   if (error) {
-    return <p>{error}</p>;
+    return (
+      <div className="feed-state feed-error">
+
+        <div className="feed-state-icon">
+          ⚠️
+        </div>
+
+        <h3>
+          Something went wrong
+        </h3>
+
+        <p>
+          {error}
+        </p>
+
+        <button
+          type="button"
+          onClick={fetchPosts}
+          className="feed-retry-button"
+        >
+          Try Again
+        </button>
+
+      </div>
+    );
   }
 
+  // ===========================
+  // Empty Feed
+  // ===========================
   if (posts.length === 0) {
-    return <p>No posts yet.</p>;
+    return (
+      <div className="feed-state feed-empty">
+
+        <div className="feed-state-icon">
+          📝
+        </div>
+
+        <h3>
+          No posts yet
+        </h3>
+
+        <p>
+          Be the first person to share
+          something with your ConnectHub
+          community.
+        </p>
+
+      </div>
+    );
   }
 
+  // ===========================
+  // Feed
+  // ===========================
   return (
     <div className="feed">
+
       {posts.map((post) => (
         <PostCard
           key={post._id}
@@ -91,6 +162,7 @@ const Feed = ({ refreshTrigger }) => {
           setPosts={setPosts}
         />
       ))}
+
     </div>
   );
 };

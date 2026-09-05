@@ -24,11 +24,78 @@ const messageSchema = new mongoose.Schema(
       default: "",
     },
 
+    delivered: {
+      type: Boolean,
+      default: false,
+    },
+
     seen: {
       type: Boolean,
       default: false,
     },
+
+    isRead: {
+      type: Boolean,
+      default: false,
+    },
+
+    edited: {
+      type: Boolean,
+      default: false,
+    },
+    forwarded: {
+  type: Boolean,
+  default: false,
+},
+
+    /* =====================================================
+       REPLY
+    ===================================================== */
+
+    replyTo: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Message",
+      default: null,
+    },
+
+    replyPreview: {
+      text: {
+        type: String,
+        default: "",
+      },
+
+      image: {
+        type: String,
+        default: "",
+      },
+
+      senderName: {
+        type: String,
+        default: "",
+      },
+    },
+
+    /* =====================================================
+       REACTIONS
+    ===================================================== */
+
+    reactions: [
+      {
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+
+        emoji: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+      },
+    ],
   },
+
   {
     timestamps: true,
   }

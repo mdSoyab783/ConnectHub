@@ -1,88 +1,318 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import {
+  useNavigate,
+  Link,
+} from "react-router-dom";
 
-import { loginUser } from "../../services/authService";
-import { useAuth } from "../../context/AuthContext";
+import {
+  loginUser,
+} from "../../services/authService";
+
+import {
+  useAuth,
+} from "../../context/AuthContext";
+
 import "../../styles/auth.css";
+
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [identifier, setIdentifier] =
+    useState("");
+
+  const [password, setPassword] =
+    useState("");
+
+  const [loading, setLoading] =
+    useState(false);
+
+  const [showPassword, setShowPassword] =
+    useState(false);
+
+  const [error, setError] =
+    useState("");
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    try {
-      const data = await loginUser(email, password);
+    // ===============================
+    // FRONTEND VALIDATION
+    // ===============================
 
-      login(data.user, data.token);
+    const cleanIdentifier =
+      identifier.trim();
+
+    if (!cleanIdentifier) {
+      setError(
+        "Please enter your email or username."
+      );
+      return;
+    }
+
+    if (!password.trim()) {
+      setError(
+        "Please enter your password."
+      );
+      return;
+    }
+
+    if (password.length < 6) {
+      setError(
+        "Password must be at least 6 characters."
+      );
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError("");
+
+      const data = await loginUser(
+        cleanIdentifier,
+        password
+      );
+
+      login(
+        data.user,
+        data.token
+      );
 
       navigate("/");
     } catch (error) {
-      alert(
-        error.response?.data?.message || "Login failed"
+      setError(
+        error.response?.data?.message ||
+        "Login failed. Please check your credentials."
       );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-  <div className="auth-container">
+    <div className="auth-page">
 
-    <div className="auth-card">
+      <div className="auth-brand">
 
-      <div className="auth-logo">
-        ConnectHub
+        <div className="auth-brand-content">
+
+          <div className="auth-brand-logo">
+            ConnectHub
+          </div>
+
+          <h1>
+            Connect with people.
+            <br />
+            Share your world.
+          </h1>
+
+          <p>
+            ConnectHub is your place to
+            connect, share posts, chat
+            with friends and build
+            meaningful connections.
+          </p>
+
+          <div className="auth-brand-features">
+
+            <div>
+              <span>👥</span>
+              <p>
+                Connect with friends
+              </p>
+            </div>
+
+            <div>
+              <span>💬</span>
+              <p>
+                Chat in real time
+              </p>
+            </div>
+
+            <div>
+              <span>📸</span>
+              <p>
+                Share your moments
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
 
-      <h2 className="auth-title">
-        Welcome Back
-      </h2>
+      <div className="auth-form-section">
 
-      <form onSubmit={submitHandler}>
+        <div className="auth-card">
 
-        <input
-          className="auth-input"
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e)=>setEmail(e.target.value)}
-          required
-        />
+          <div className="auth-mobile-logo">
+            ConnectHub
+          </div>
 
-        <input
-          className="auth-input"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e)=>setPassword(e.target.value)}
-          required
-        />
+          <div className="auth-heading">
 
-        <button
-          className="auth-btn"
-          type="submit"
-        >
-          Login
-        </button>
+            <h2>
+              Welcome Back 👋
+            </h2>
 
-      </form>
+            <p>
+              Login using your email
+              or username
+            </p>
 
-      <div className="auth-footer">
+          </div>
 
-        Don't have an account?{" "}
+          <form
+            className="auth-form"
+            onSubmit={submitHandler}
+          >
 
-        <Link to="/register">
-          Register
-        </Link>
+            {/* EMAIL / USERNAME */}
+
+            <div className="auth-field">
+
+              <label htmlFor="login-identifier">
+                Email or Username
+              </label>
+
+              <div className="auth-input-wrapper">
+
+                <span className="auth-input-icon">
+                  👤
+                </span>
+
+                <input
+                  id="login-identifier"
+                  className="auth-input"
+                  type="text"
+                  placeholder="Enter email or username"
+                  value={identifier}
+                  onChange={(e) => {
+                    setIdentifier(
+                      e.target.value
+                    );
+
+                    if (error) {
+                      setError("");
+                    }
+                  }}
+                  required
+                  autoComplete="username"
+                />
+
+              </div>
+
+            </div>
+
+            {/* PASSWORD */}
+
+            <div className="auth-field">
+
+              <label htmlFor="login-password">
+                Password
+              </label>
+
+              <div className="auth-input-wrapper">
+
+                <span className="auth-input-icon">
+                  🔒
+                </span>
+
+                <input
+                  id="login-password"
+                  className="auth-input"
+                  type={
+                    showPassword
+                      ? "text"
+                      : "password"
+                  }
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(
+                      e.target.value
+                    );
+
+                    if (error) {
+                      setError("");
+                    }
+                  }}
+                  required
+                  autoComplete="current-password"
+                />
+
+                <button
+                  type="button"
+                  className="auth-password-toggle"
+                  onClick={() =>
+                    setShowPassword(
+                      (prev) => !prev
+                    )
+                  }
+                  aria-label={
+                    showPassword
+                      ? "Hide password"
+                      : "Show password"
+                  }
+                >
+                  {showPassword
+                    ? "🙈"
+                    : "👁️"}
+                </button>
+
+              </div>
+
+            </div>
+
+            {/* ERROR */}
+
+            {error && (
+              <div
+                className="auth-error"
+                role="alert"
+              >
+                ⚠️ {error}
+              </div>
+            )}
+
+            {/* LOGIN BUTTON */}
+
+            <button
+              className="auth-btn"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <span className="auth-spinner"></span>
+                  Logging in...
+                </>
+              ) : (
+                "Login"
+              )}
+            </button>
+
+          </form>
+
+          <div className="auth-footer">
+
+            <span>
+              Don't have an account?
+            </span>
+
+            <Link to="/register">
+              Create an account
+            </Link>
+
+          </div>
+
+        </div>
 
       </div>
 
     </div>
-
-  </div>
-);
+  );
 };
 
 export default Login;

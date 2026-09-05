@@ -4,6 +4,7 @@ import { useSocket } from "../../context/SocketContext";
 
 const ConversationItem = ({
   conversation,
+  unreadCount = 0,
   active,
   onClick,
 }) => {
@@ -41,16 +42,26 @@ const ConversationItem = ({
 
           <h4>{otherUser?.fullName}</h4>
 
-          {conversation.lastMessage && (
-            <span className="conversation-time">
-              {new Date(
-                conversation.lastMessage.createdAt
-              ).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </span>
-          )}
+          <div className="conversation-meta">
+
+            {conversation.lastMessage && (
+              <span className="conversation-time">
+                {new Date(
+                  conversation.lastMessage.createdAt
+                ).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
+            )}
+
+            {unreadCount > 0 && !active && (
+              <span className="conversation-unread">
+                {unreadCount}
+              </span>
+            )}
+
+          </div>
 
         </div>
 

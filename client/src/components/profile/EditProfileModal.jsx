@@ -1,5 +1,9 @@
 import { useState } from "react";
+
 import profileService from "../../services/profileService";
+
+import "./EditProfileModal.css";
+
 const EditProfileModal = ({
   profile,
   reloadProfile,
@@ -11,89 +15,236 @@ const EditProfileModal = ({
     bio: profile.bio || "",
     college: profile.college || "",
     location: profile.location || "",
-    skills: profile.skills?.join(",") || "",
+    skills: profile.skills?.join(", ") || "",
   });
 
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
   const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
+      setSaving(true);
+      setError("");
 
-      await profileService.updateProfile(form);
+      const updatedData = {
+        ...form,
 
-      reloadProfile();
+        // Convert comma-separated skills into an array
+        skills: form.skills
+          .split(",")
+          .map((skill) => skill.trim())
+          .filter((skill) => skill.length > 0),
+      };
+
+      await profileService.updateProfile(updatedData);
+
+      await reloadProfile();
 
       closeModal();
 
     } catch (error) {
+      console.error("Profile update error:", error);
 
-      console.log(error);
+      setError(
+        error.response?.data?.message ||
+        "Failed to update profile. Please try again."
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
 
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      closeModal();
     }
   };
 
   return (
-    <div className="modal-overlay">
+    <div
+      className="edit-modal-overlay"
+      onMouseDown={handleOverlayClick}
+    >
 
-      <div className="modal">
+      <div
+        className="edit-profile-modal"
+        onMouseDown={(e) => e.stopPropagation()}
+      >
 
-        <h2>Edit Profile</h2>
+        {/* HEADER */}
 
-        <form onSubmit={handleSubmit}>
+        <div className="edit-modal-header">
 
-          <input
-            name="fullName"
-            value={form.fullName}
-            onChange={handleChange}
-            placeholder="Full Name"
-          />
+          <div>
+            <h2>Edit Profile</h2>
 
-          <textarea
-            name="bio"
-            value={form.bio}
-            onChange={handleChange}
-            placeholder="Bio"
-          />
+            <p>
+              Update your profile information
+            </p>
+          </div>
 
-          <input
-            name="college"
-            value={form.college}
-            onChange={handleChange}
-            placeholder="College"
-          />
+          <button
+            type="button"
+            className="edit-modal-close"
+            onClick={closeModal}
+            aria-label="Close"
+          >
+            ×
+          </button>
 
-          <input
-            name="location"
-            value={form.location}
-            onChange={handleChange}
-            placeholder="Location"
-          />
+        </div>
 
-          <input
-            name="skills"
-            value={form.skills}
-            onChange={handleChange}
-            placeholder="React,Node,Express"
-          />
 
-          <div className="modal-buttons">
+        {/* FORM */}
+
+        <form
+          className="edit-profile-form"
+          onSubmit={handleSubmit}
+        >
+
+          {/* FULL NAME */}
+
+          <div className="edit-form-group">
+
+            <label htmlFor="fullName">
+              Full Name
+            </label>
+
+            <input
+              id="fullName"
+              type="text"
+              name="fullName"
+              value={form.fullName}
+              onChange={handleChange}
+              placeholder="Enter your full name"
+            />
+
+          </div>
+
+
+          {/* BIO */}
+
+          <div className="edit-form-group">
+
+            <label htmlFor="bio">
+              Bio
+            </label>
+
+            <textarea
+              id="bio"
+              name="bio"
+              value={form.bio}
+              onChange={handleChange}
+              placeholder="Tell people something about yourself..."
+              rows="4"
+            />
+
+          </div>
+
+
+          {/* COLLEGE */}
+
+          <div className="edit-form-group">
+
+            <label htmlFor="college">
+              College
+            </label>
+
+            <input
+              id="college"
+              type="text"
+              name="college"
+              value={form.college}
+              onChange={handleChange}
+              placeholder="Enter your college"
+            />
+
+          </div>
+
+
+          {/* LOCATION */}
+
+          <div className="edit-form-group">
+
+            <label htmlFor="location">
+              Location
+            </label>
+
+            <input
+              id="location"
+              type="text"
+              name="location"
+              value={form.location}
+              onChange={handleChange}
+              placeholder="Enter your location"
+            />
+
+          </div>
+
+
+          {/* SKILLS */}
+
+          <div className="edit-form-group">
+
+            <label htmlFor="skills">
+              Skills
+            </label>
+
+            <input
+              id="skills"
+              type="text"
+              name="skills"
+              value={form.skills}
+              onChange={handleChange}
+              placeholder="React, Node.js, MongoDB"
+            />
+
+            <small>
+              Separate skills using commas
+            </small>
+
+          </div>
+
+
+          {/* ERROR */}
+
+          {error && (
+            <div className="edit-profile-error">
+              ⚠️ {error}
+            </div>
+          )}
+
+
+          {/* BUTTONS */}
+
+          <div className="edit-modal-buttons">
 
             <button
               type="button"
+              className="edit-cancel-btn"
               onClick={closeModal}
+              disabled={saving}
             >
               Cancel
             </button>
 
-            <button type="submit">
-              Save Changes
+            <button
+              type="submit"
+              className="edit-save-btn"
+              disabled={saving}
+            >
+              {saving ? "Saving..." : "Save Changes"}
             </button>
 
           </div>

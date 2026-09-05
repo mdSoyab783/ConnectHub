@@ -1,86 +1,1319 @@
-.navbar{
+/* =====================================================
+   CONNECTHUB NAVBAR
+===================================================== */
 
-height:70px;
+.navbar {
+  height: 70px;
 
-display:flex;
-
-justify-content:space-between;
-
-align-items:center;
-
-padding:0 25px;
-
-background:white;
-
-border-bottom:1px solid #ddd;
-
-position:fixed;
-
-top:0;
-
-left:0;
-
-right:0;
-
-z-index:100;
-
-}
-
-.logo{
-
-font-size:24px;
-
-font-weight:bold;
-
-color:#2563EB;
-
-}
-
-.navbar input{
-
-width:320px;
-
-padding:10px;
-
-border-radius:8px;
-
-border:1px solid #ddd;
-
-}
-
-.nav-right{
-
-display:flex;
-
-gap:15px;
-
-align-items:center;
-
-}
-.notification-wrapper {
-  position: relative;
-}
-
-.notification-btn {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 24px;
-  position: relative;
-}
-
-.notification-badge {
-  position: absolute;
-  top: -5px;
-  right: -8px;
-  background: #ef4444;
-  color: white;
-  min-width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  font-size: 11px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  font-weight: bold;
+  justify-content: space-between;
+
+  padding: 0 30px;
+
+  background: rgba(255, 255, 255, 0.97);
+
+  border-bottom: 1px solid #e5e7eb;
+
+  position: fixed;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  z-index: 1000;
+
+  box-sizing: border-box;
+
+  backdrop-filter: blur(10px);
+
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+
+/* =====================================================
+   LOGO
+===================================================== */
+
+.navbar-logo {
+  text-decoration: none;
+
+  font-size: 25px;
+
+  font-weight: 800;
+
+  letter-spacing: -0.5px;
+
+  color: #2563eb;
+
+  white-space: nowrap;
+
+  transition: opacity 0.2s ease;
+}
+
+.navbar-logo:hover {
+  opacity: 0.85;
+}
+
+
+/* =====================================================
+   NAVBAR SEARCH
+===================================================== */
+
+.navbar-search {
+  flex: 1;
+
+  display: flex;
+
+  justify-content: center;
+
+  margin: 0 35px;
+
+  min-width: 200px;
+
+  max-width: 430px;
+}
+
+
+/* Search container */
+
+.navbar-search .search-container {
+  position: relative;
+
+  width: 100%;
+}
+
+
+/* Search input */
+
+.navbar-search .search-container input {
+  width: 100%;
+
+  height: 42px;
+
+  padding: 0 17px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 22px;
+
+  background: #f3f4f6;
+
+  color: #1f2937;
+
+  font-size: 14px;
+
+  outline: none;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+/* Search placeholder */
+
+.navbar-search .search-container input::placeholder {
+  color: #6b7280;
+}
+
+
+/* Search focus */
+
+.navbar-search .search-container input:focus {
+  background: #ffffff;
+
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+
+/* =====================================================
+   RIGHT SIDE
+===================================================== */
+
+.nav-right {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  flex-shrink: 0;
+}
+
+
+/* =====================================================
+   NAVIGATION LINKS
+===================================================== */
+
+.nav-link {
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 9px 12px;
+
+  border-radius: 9px;
+
+  text-decoration: none;
+
+  color: #374151;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.nav-link:hover {
+  background: #f3f6fb;
+
+  color: #2563eb;
+}
+
+
+/* Navigation icons */
+
+.nav-icon {
+  font-size: 17px;
+
+  line-height: 1;
+}
+
+
+/* =====================================================
+   MESSAGE ICON
+===================================================== */
+
+.nav-icon-button {
+  width: 40px;
+
+  height: 40px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  margin-left: 3px;
+
+  border-radius: 50%;
+
+  text-decoration: none;
+
+  font-size: 21px;
+
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease;
+}
+
+.nav-icon-button:hover {
+  background: #f1f5f9;
+
+  transform: translateY(-1px);
+}
+
+
+/* =====================================================
+   NOTIFICATION
+===================================================== */
+
+.navbar-notification {
+  width: 40px;
+
+  height: 40px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 50%;
+
+  transition:
+    background 0.2s ease;
+}
+
+.navbar-notification:hover {
+  background: #f1f5f9;
+}
+
+
+/* =====================================================
+   USER AREA
+===================================================== */
+
+.navbar-user {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  margin-left: 5px;
+
+  padding: 5px 9px 5px 5px;
+
+  border-radius: 24px;
+
+  text-decoration: none;
+
+  color: #1f2937;
+
+  white-space: nowrap;
+
+  transition:
+    background 0.2s ease;
+}
+
+.navbar-user:hover {
+  background: #f3f4f6;
+}
+
+
+/* =====================================================
+   USER AVATAR
+===================================================== */
+
+.navbar-user-avatar {
+  width: 36px;
+
+  height: 36px;
+
+  border-radius: 50%;
+
+  overflow: hidden;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #2563eb;
+
+  color: white;
+
+  font-size: 15px;
+
+  font-weight: 700;
+
+  flex-shrink: 0;
+}
+
+.navbar-user-avatar img {
+  width: 100%;
+
+  height: 100%;
+
+  object-fit: cover;
+
+  display: block;
+}
+
+
+/* =====================================================
+   USERNAME
+===================================================== */
+
+.navbar-username {
+  max-width: 130px;
+
+  overflow: hidden;
+
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+
+  font-size: 14px;
+
+  font-weight: 600;
+}
+
+
+/* =====================================================
+   LOGOUT BUTTON
+===================================================== */
+
+.navbar-logout {
+  margin-left: 4px;
+
+  padding: 8px 14px;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 8px;
+
+  background: white;
+
+  color: #374151;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.navbar-logout:hover {
+  background: #fef2f2;
+
+  color: #dc2626;
+
+  border-color: #fecaca;
+
+  transform: translateY(-1px);
+}
+
+.navbar-logout:active {
+  transform: translateY(0);
+}
+
+
+/* =====================================================
+   SEARCH RESULTS
+===================================================== */
+
+.navbar-search .search-container {
+  z-index: 2000;
+}
+
+.navbar-search .search-container > * {
+  box-sizing: border-box;
+}
+
+
+/* =====================================================
+   RESPONSIVE - TABLET
+===================================================== */
+
+@media (max-width: 1100px) {
+
+  .navbar {
+    padding: 0 20px;
+  }
+
+  .navbar-search {
+    margin: 0 20px;
+
+    max-width: 330px;
+  }
+
+  .navbar-username {
+    max-width: 100px;
+  }
+
+  .nav-link {
+    padding: 8px;
+  }
+
+  .nav-text {
+    display: none;
+  }
+}
+
+
+/* =====================================================
+   RESPONSIVE - MOBILE
+===================================================== */
+
+@media (max-width: 768px) {
+
+  .navbar {
+    height: 65px;
+
+    padding: 0 15px;
+  }
+
+  .navbar-logo {
+    font-size: 21px;
+  }
+
+  .navbar-search {
+    margin: 0 10px;
+
+    min-width: 120px;
+
+    max-width: 220px;
+  }
+
+  .navbar-search .search-container input {
+    height: 38px;
+
+    font-size: 13px;
+
+    padding: 0 12px;
+  }
+
+  .nav-right {
+    gap: 3px;
+  }
+
+  .nav-text {
+    display: none;
+  }
+
+  .navbar-username {
+    display: none;
+  }
+
+  .navbar-user {
+    padding: 4px;
+  }
+
+  .navbar-logout {
+    padding: 7px 10px;
+
+    font-size: 12px;
+  }
+
+  .nav-icon-button {
+    width: 38px;
+
+    height: 38px;
+  }
+
+  .navbar-notification {
+    width: 38px;
+
+    height: 38px;
+  }
+}
+
+
+/* =====================================================
+   RESPONSIVE - SMALL MOBILE
+===================================================== */
+
+@media (max-width: 480px) {
+
+  .navbar {
+    height: 62px;
+
+    padding: 0 10px;
+  }
+
+  .navbar-logo {
+    font-size: 18px;
+  }
+
+  .navbar-search {
+    margin: 0 5px;
+
+    min-width: 100px;
+
+    max-width: 150px;
+  }
+
+  .navbar-search .search-container input {
+    height: 36px;
+
+    font-size: 12px;
+
+    padding: 0 10px;
+  }
+
+  .navbar-logout {
+    font-size: 11px;
+
+    padding: 6px 8px;
+  }
+
+  .navbar-user-avatar {
+    width: 32px;
+
+    height: 32px;
+  }
+
+  .nav-icon-button {
+    width: 34px;
+
+    height: 34px;
+
+    font-size: 19px;
+  }
+
+  .navbar-notification {
+    width: 34px;
+
+    height: 34px;
+  }
+}
+/* =========================================
+   NAVBAR LEFT SECTION
+========================================= */
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+
+/* =========================================
+   MENU BUTTON
+========================================= */
+
+.navbar-menu-button {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 10px;
+
+  background: transparent;
+  color: #374151;
+
+  font-size: 22px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.navbar-menu-button:hover {
+  background: #f1f5f9;
+  color: #2563eb;
+}
+
+.navbar-menu-button:active {
+  transform: scale(0.94);
+}
+
+.navbar-menu-button-active {
+  background: #eef4ff;
+  color: #2563eb;
+}
+
+.navbar-menu-button:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+
+/* =========================================
+   DESKTOP NAVBAR ADJUSTMENT
+========================================= */
+
+@media (max-width: 1100px) {
+
+  .navbar-left {
+    gap: 8px;
+  }
+
+  .navbar-menu-button {
+    width: 38px;
+    height: 38px;
+  }
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 768px) {
+
+  .navbar-left {
+    gap: 6px;
+  }
+
+  .navbar-menu-button {
+    width: 36px;
+    height: 36px;
+
+    font-size: 20px;
+  }
+
+}
+
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 480px) {
+
+  .navbar-left {
+    gap: 4px;
+  }
+
+  .navbar-menu-button {
+    width: 34px;
+    height: 34px;
+
+    font-size: 18px;
+  }
+
+}
+/* =====================================================
+   FACEBOOK STYLE NAVBAR
+===================================================== */
+
+
+/* =====================================================
+   NAVBAR LEFT
+===================================================== */
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+
+  flex-shrink: 0;
+}
+
+
+/* =====================================================
+   CIRCLE BUTTON
+===================================================== */
+
+.navbar-circle-button {
+  position: relative;
+
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #e4e6eb;
+
+  color: #111827;
+
+  text-decoration: none;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease;
+}
+
+.navbar-circle-button:hover {
+  background: #d8dadf;
+
+  transform: translateY(-1px);
+}
+
+.navbar-circle-button:active {
+  transform: scale(0.94);
+}
+
+.navbar-circle-button-active {
+  background: #dbeafe;
+}
+
+.navbar-circle-button:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+
+/* =========================================
+   HOME ICON
+========================================= */
+
+.navbar-home-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 22px;
+
+  line-height: 1;
+}
+
+/* =====================================================
+   MESSENGER ICON
+===================================================== */
+
+.navbar-messenger-icon {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  font-size: 23px;
+
+  line-height: 1;
+}
+
+
+/* =====================================================
+   NOTIFICATION WRAPPER
+===================================================== */
+
+.navbar-notification {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+}
+
+
+/* Make existing notification button
+   match the new circular design */
+
+.navbar-notification .notification-btn {
+  width: 48px !important;
+  height: 48px !important;
+
+  background: #e4e6eb !important;
+
+  border-radius: 50% !important;
+
+  font-size: 21px;
+}
+
+.navbar-notification .notification-btn:hover {
+  background: #d8dadf !important;
+}
+
+
+/* =====================================================
+   PROFILE WRAPPER
+===================================================== */
+
+.navbar-profile-wrapper {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+}
+
+
+/* =====================================================
+   PROFILE BUTTON
+===================================================== */
+
+.navbar-profile-button {
+  position: relative;
+
+  width: 48px;
+  height: 48px;
+
+  padding: 0;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  transition:
+    transform 0.15s ease,
+    background 0.2s ease;
+}
+
+.navbar-profile-button:hover {
+  background: #f1f5f9;
+}
+
+.navbar-profile-button:active {
+  transform: scale(0.95);
+}
+
+.navbar-profile-button:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+
+/* =====================================================
+   PROFILE AVATAR
+===================================================== */
+
+.navbar-profile-avatar {
+  width: 48px;
+  height: 48px;
+
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #2563eb;
+
+  color: white;
+
+  font-size: 17px;
+
+  font-weight: 700;
+}
+
+.navbar-profile-avatar img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+}
+
+
+/* =====================================================
+   PROFILE ARROW
+===================================================== */
+
+.navbar-profile-arrow {
+  position: absolute;
+
+  right: -2px;
+  bottom: -1px;
+
+  width: 20px;
+  height: 20px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 2px solid #ffffff;
+
+  border-radius: 50%;
+
+  background: #e4e6eb;
+
+  color: #111827;
+
+  font-size: 13px;
+
+  font-weight: 800;
+
+  line-height: 1;
+}
+
+
+/* =====================================================
+   PROFILE DROPDOWN
+===================================================== */
+
+.navbar-profile-menu {
+  position: absolute;
+
+  top: calc(100% + 10px);
+
+  right: 0;
+
+  width: 280px;
+
+  padding: 8px;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 14px;
+
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.15),
+    0 4px 12px rgba(0, 0, 0, 0.06);
+
+  z-index: 99999;
+
+  animation: profile-menu-open 0.18s ease-out;
+}
+
+@keyframes profile-menu-open {
+
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+}
+
+
+/* =====================================================
+   PROFILE MENU USER
+===================================================== */
+
+.navbar-profile-menu-user {
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+  padding: 10px;
+
+  border-radius: 10px;
+
+  text-decoration: none;
+
+  color: #111827;
+}
+
+.navbar-profile-menu-user:hover {
+  background: #f3f4f6;
+}
+
+.navbar-profile-menu-avatar {
+  width: 42px;
+  height: 42px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  border-radius: 50%;
+
+  background: #2563eb;
+
+  color: white;
+
+  font-weight: 700;
+}
+
+.navbar-profile-menu-avatar img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+.navbar-profile-menu-user div:last-child {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.navbar-profile-menu-user strong {
+  overflow: hidden;
+
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+
+  font-size: 14px;
+}
+
+.navbar-profile-menu-user span {
+  color: #6b7280;
+
+  font-size: 11px;
+}
+
+
+/* =====================================================
+   DIVIDER
+===================================================== */
+
+.navbar-profile-divider {
+  height: 1px;
+
+  margin: 5px 4px;
+
+  background: #e5e7eb;
+}
+
+
+/* =====================================================
+   PROFILE MENU ITEMS
+===================================================== */
+
+.navbar-profile-menu-item {
+  width: 100%;
+
+  min-height: 43px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 7px 10px;
+
+  box-sizing: border-box;
+
+  border: none;
+
+  border-radius: 9px;
+
+  background: transparent;
+
+  color: #374151;
+
+  font-family: inherit;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  text-decoration: none;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.navbar-profile-menu-item:hover {
+  background: #f3f4f6;
+
+  color: #2563eb;
+}
+
+.navbar-profile-logout {
+  color: #dc2626;
+}
+
+.navbar-profile-logout:hover {
+  background: #fef2f2;
+
+  color: #dc2626;
+}
+
+
+/* =====================================================
+   NAV RIGHT SPACING
+===================================================== */
+
+.nav-right {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+}
+
+
+/* =====================================================
+   DESKTOP
+===================================================== */
+
+@media (min-width: 1101px) {
+
+  .navbar-circle-button,
+  .navbar-notification,
+  .navbar-profile-button {
+    width: 48px;
+    height: 48px;
+  }
+
+}
+
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 768px) {
+
+  .navbar-circle-button {
+    width: 42px;
+    height: 42px;
+  }
+
+  .navbar-notification {
+    width: 42px;
+    height: 42px;
+  }
+
+  .navbar-notification .notification-btn {
+    width: 42px !important;
+    height: 42px !important;
+  }
+
+  .navbar-profile-button {
+    width: 42px;
+    height: 42px;
+  }
+
+  .navbar-profile-avatar {
+    width: 42px;
+    height: 42px;
+  }
+
+  .navbar-profile-arrow {
+    width: 18px;
+    height: 18px;
+
+    font-size: 11px;
+  }
+
+  .apps-grid {
+    transform: scale(0.9);
+  }
+
+  .navbar-profile-menu {
+    width: 260px;
+  }
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 480px) {
+
+  .navbar-circle-button {
+    width: 38px;
+    height: 38px;
+  }
+
+  .navbar-notification {
+    width: 38px;
+    height: 38px;
+  }
+
+  .navbar-notification .notification-btn {
+    width: 38px !important;
+    height: 38px !important;
+  }
+
+  .navbar-profile-button {
+    width: 38px;
+    height: 38px;
+  }
+
+  .navbar-profile-avatar {
+    width: 38px;
+    height: 38px;
+
+    font-size: 14px;
+  }
+
+  .navbar-profile-arrow {
+    width: 17px;
+    height: 17px;
+
+    right: -2px;
+    bottom: -2px;
+
+    font-size: 10px;
+  }
+
+  .nav-right {
+    gap: 4px;
+  }
+
+  .navbar-profile-menu {
+    top: calc(100% + 8px);
+
+    right: -5px;
+
+    width: 250px;
+  }
+
+}
+
+
+/* =====================================================
+   VERY SMALL MOBILE
+===================================================== */
+
+@media (max-width: 360px) {
+
+  .navbar-circle-button {
+    width: 35px;
+    height: 35px;
+  }
+
+  .navbar-notification {
+    width: 35px;
+    height: 35px;
+  }
+
+  .navbar-notification .notification-btn {
+    width: 35px !important;
+    height: 35px !important;
+  }
+
+  .navbar-profile-button {
+    width: 35px;
+    height: 35px;
+  }
+
+  .navbar-profile-avatar {
+    width: 35px;
+    height: 35px;
+  }
+
+  .navbar-profile-arrow {
+    width: 15px;
+    height: 15px;
+
+    font-size: 9px;
+  }
+
+  .nav-right {
+    gap: 2px;
+  }
+
 }

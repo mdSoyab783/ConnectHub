@@ -16,7 +16,7 @@ const notificationSchema = new mongoose.Schema(
 
     type: {
       type: String,
-      enum: ["like", "comment", "follow"],
+      enum: ["like", "comment", "follow", "message"],
       required: true,
     },
 
@@ -32,6 +32,18 @@ const notificationSchema = new mongoose.Schema(
       default: null,
     },
 
+    conversation: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Conversation",
+      default: null,
+    },
+
+    message: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Message",
+      default: null,
+    },
+
     isRead: {
       type: Boolean,
       default: false,
@@ -42,7 +54,4 @@ const notificationSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model(
-  "Notification",
-  notificationSchema
-);
+module.exports = mongoose.model("Notification", notificationSchema);

@@ -1,29 +1,106 @@
+import "./AboutCard.css";
 const AboutCard = ({ profile }) => {
   return (
     <div className="about-card">
 
-      <h3>About</h3>
+      
+      {/* =================================
+          BIO
+          HEADER
+      ================================= */}
 
-      <p>{profile.bio || "No bio added yet."}</p>
+      <div className="about-card-header">
+        <h3>About</h3>
+      </div>
 
-      <p>
-        <strong>🏫 College:</strong>{" "}
-        {profile.college || "Not added"}
-      </p>
 
-      <p>
-        <strong>📍 Location:</strong>{" "}
-        {profile.location || "Not added"}
-      </p>
+      {/* =================================
+          BIO
+      ================================= */}
 
-      <div className="skills">
+      <div className="about-bio">
+
+        <p>
+          {profile.bio || "No bio added yet."}
+        </p>
+
+      </div>
+
+
+      {/* =================================
+          PROFILE DETAILS
+      ================================= */}
+
+      <div className="about-details">
+
+        <div className="about-detail-item">
+
+          <span className="about-detail-icon">
+            🏫
+          </span>
+
+          <div>
+            <span className="about-detail-label">
+              College
+            </span>
+
+            <p>
+              {profile.college || "Not added"}
+            </p>
+          </div>
+
+        </div>
+
+
+        <div className="about-detail-item">
+
+          <span className="about-detail-icon">
+            📍
+          </span>
+
+          <div>
+            <span className="about-detail-label">
+              Location
+            </span>
+
+            <p>
+              {profile.location || "Not added"}
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      {/* =================================
+          SKILLS
+      ================================= */}
+
+      <div className="about-skills">
+
+        <h4>Skills</h4>
+
         {profile.skills?.length > 0 ? (
-          profile.skills.map((skill) => (
-            <span key={skill}>{skill}</span>
-          ))
+
+          <div className="skills">
+
+            {profile.skills.map((skill) => (
+              <span key={skill}>
+                {skill}
+              </span>
+            ))}
+
+          </div>
+
         ) : (
-          <p>No skills added.</p>
+
+          <p className="no-skills">
+            No skills added yet.
+          </p>
+
         )}
+
       </div>
 
     </div>

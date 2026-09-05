@@ -4,6 +4,7 @@ const path = require("path");
 // Configure storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
+    // User images
     if (req.baseUrl.includes("users")) {
       if (req.path.includes("profile-image")) {
         cb(null, "uploads/profile");
@@ -12,7 +13,15 @@ const storage = multer.diskStorage({
       } else {
         cb(null, "uploads/profile");
       }
-    } else {
+    }
+
+    // Message images
+    else if (req.baseUrl.includes("messages")) {
+      cb(null, "uploads/messages");
+    }
+
+    // Post images
+    else {
       cb(null, "uploads/posts");
     }
   },
@@ -41,8 +50,8 @@ const upload = multer({
   storage,
   fileFilter,
   limits: {
-  fileSize: 10 * 1024 * 1024, // 10 MB
- },
+    fileSize: 10 * 1024 * 1024,
+  },
 });
 
 module.exports = upload;

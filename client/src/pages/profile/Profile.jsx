@@ -14,35 +14,111 @@ const Profile = () => {
   const [profile, setProfile] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
+  // =========================================
+  // LOAD PROFILE
+  // =========================================
+
   const loadProfile = async () => {
     try {
       const response = await profileService.getMyProfile();
+
       setProfile(response.user);
     } catch (error) {
-      console.log(error);
+      console.log("Profile loading error:", error);
     }
   };
+
+
+  // =========================================
+  // INITIAL LOAD
+  // =========================================
 
   useEffect(() => {
     loadProfile();
   }, []);
 
-  if (!profile) return <h2>Loading...</h2>;
+
+  // =========================================
+  // LOADING
+  // =========================================
+
+  if (!profile) {
+    return (
+      <div className="profile-loading">
+
+        <div className="profile-loading-spinner"></div>
+
+        <p>Loading profile...</p>
+
+      </div>
+    );
+  }
+
+
+  // =========================================
+  // PROFILE PAGE
+  // =========================================
 
   return (
     <div className="profile-page">
 
-      <ProfileHeader
-        profile={profile}
-        reloadProfile={loadProfile}
-        openEditModal={() => setShowModal(true)}
-      />
+      {/* =====================================
+          PROFILE HEADER
+      ===================================== */}
 
-      <ProfileStats profile={profile} />
+      <section className="profile-section profile-header-section">
 
-      <AboutCard profile={profile} />
+        <ProfileHeader
+          profile={profile}
+          reloadProfile={loadProfile}
+          openEditModal={() => setShowModal(true)}
+        />
 
-      <UserPosts userId={profile._id} />
+      </section>
+
+
+      {/* =====================================
+          PROFILE STATS
+      ===================================== */}
+
+      <section className="profile-section">
+
+        <ProfileStats
+          profile={profile}
+        />
+
+      </section>
+
+
+      {/* =====================================
+          ABOUT
+      ===================================== */}
+
+      <section className="profile-section">
+
+        <AboutCard
+          profile={profile}
+        />
+
+      </section>
+
+
+      {/* =====================================
+          USER POSTS
+      ===================================== */}
+
+      <section className="profile-section profile-posts-section">
+
+        <UserPosts
+          userId={profile._id}
+        />
+
+      </section>
+
+
+      {/* =====================================
+          EDIT PROFILE MODAL
+      ===================================== */}
 
       {showModal && (
         <EditProfileModal

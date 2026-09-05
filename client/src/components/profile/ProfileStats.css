@@ -1,0 +1,212 @@
+/* =========================================
+   PROFILE STATS
+========================================= */
+
+.profile-stats {
+  width: 100%;
+  max-width: 900px;
+
+  margin: 0 auto 20px;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+
+  overflow: hidden;
+
+  box-sizing: border-box;
+
+  box-shadow:
+    0 3px 12px rgba(0, 0, 0, 0.04);
+}
+
+
+/* =========================================
+   INDIVIDUAL STAT
+========================================= */
+
+.profile-stat-item {
+  position: relative;
+
+  min-height: 90px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 15px 10px;
+
+  box-sizing: border-box;
+
+  text-align: center;
+
+  cursor: default;
+
+  transition:
+    background 0.2s ease;
+}
+
+
+/* Vertical separators */
+
+.profile-stat-item:not(:last-child)::after {
+  content: "";
+
+  position: absolute;
+
+  right: 0;
+  top: 22px;
+  bottom: 22px;
+
+  width: 1px;
+
+  background: #e5e7eb;
+}
+
+
+/* =========================================
+   NUMBER
+========================================= */
+
+.profile-stat-item h3 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 22px;
+  font-weight: 750;
+
+  line-height: 1.2;
+}
+
+
+/* =========================================
+   LABEL
+========================================= */
+
+.profile-stat-item p {
+  margin: 6px 0 0;
+
+  color: #6b7280;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  line-height: 1.2;
+}
+
+
+/* =========================================
+   HOVER
+========================================= */
+
+.profile-stat-item:hover {
+  background: #f8fafc;
+}
+
+.profile-stat-item:hover h3 {
+  color: #2563eb;
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 768px) {
+
+  .profile-stats {
+    max-width: 100%;
+
+    margin-bottom: 16px;
+
+    border-radius: 12px;
+  }
+
+  .profile-stat-item {
+    min-height: 82px;
+
+    padding: 12px 8px;
+  }
+
+  .profile-stat-item h3 {
+    font-size: 20px;
+  }
+
+  .profile-stat-item p {
+    font-size: 12px;
+  }
+
+  .profile-stat-item:not(:last-child)::after {
+    top: 20px;
+    bottom: 20px;
+  }
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 480px) {
+
+  .profile-stats {
+    margin-bottom: 14px;
+
+    border-radius: 11px;
+  }
+
+  .profile-stat-item {
+    min-height: 72px;
+
+    padding: 10px 5px;
+  }
+
+  .profile-stat-item h3 {
+    font-size: 18px;
+  }
+
+  .profile-stat-item p {
+    margin-top: 4px;
+
+    font-size: 11px;
+  }
+
+  .profile-stat-item:not(:last-child)::after {
+    top: 17px;
+    bottom: 17px;
+  }
+}
+
+
+/* =========================================
+   VERY SMALL MOBILE
+========================================= */
+
+@media (max-width: 360px) {
+
+  .profile-stat-item {
+    min-height: 66px;
+
+    padding: 8px 3px;
+  }
+
+  .profile-stat-item h3 {
+    font-size: 16px;
+  }
+
+  .profile-stat-item p {
+    font-size: 10px;
+  }
+
+  .profile-stat-item:not(:last-child)::after {
+    top: 15px;
+    bottom: 15px;
+  }
+}

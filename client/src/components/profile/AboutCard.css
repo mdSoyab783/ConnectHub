@@ -1,0 +1,427 @@
+/* =========================================
+   ABOUT CARD
+========================================= */
+
+.about-card {
+  width: 100%;
+  max-width: 900px;
+
+  margin: 0 auto 20px;
+
+  padding: 22px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 16px;
+
+  box-sizing: border-box;
+
+  box-shadow:
+    0 3px 14px rgba(0, 0, 0, 0.05);
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.about-card-header {
+  display: flex;
+  align-items: center;
+
+  margin-bottom: 18px;
+
+  padding-bottom: 12px;
+
+  border-bottom: 1px solid #eef0f3;
+}
+
+.about-card-header h3 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 19px;
+
+  font-weight: 700;
+}
+
+
+/* =========================================
+   BIO
+========================================= */
+
+.about-bio {
+  margin-bottom: 20px;
+}
+
+.about-bio p {
+  margin: 0;
+
+  color: #374151;
+
+  font-size: 15px;
+
+  line-height: 1.6;
+
+  white-space: pre-wrap;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* =========================================
+   DETAILS
+========================================= */
+
+.about-details {
+  display: flex;
+  flex-direction: column;
+
+  gap: 13px;
+
+  margin-bottom: 21px;
+}
+
+
+/* =========================================
+   DETAIL ITEM
+========================================= */
+
+.about-detail-item {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 10px 11px;
+
+  border-radius: 10px;
+
+  background: #f8fafc;
+
+  transition:
+    background 0.2s ease;
+}
+
+.about-detail-item:hover {
+  background: #f1f5f9;
+}
+
+
+/* =========================================
+   DETAIL ICON
+========================================= */
+
+.about-detail-icon {
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9px;
+
+  background: #eff6ff;
+
+  font-size: 18px;
+}
+
+
+/* =========================================
+   DETAIL TEXT
+========================================= */
+
+.about-detail-item > div {
+  min-width: 0;
+}
+
+.about-detail-label {
+  display: block;
+
+  margin-bottom: 3px;
+
+  color: #6b7280;
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.4px;
+}
+
+.about-detail-item p {
+  margin: 0;
+
+  color: #1f2937;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  line-height: 1.4;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* =========================================
+   SKILLS
+========================================= */
+
+.about-skills {
+  padding-top: 17px;
+
+  border-top: 1px solid #eef0f3;
+}
+
+.about-skills h4 {
+  margin: 0 0 12px;
+
+  color: #374151;
+
+  font-size: 14px;
+
+  font-weight: 700;
+}
+
+
+/* =========================================
+   SKILL TAGS
+========================================= */
+
+.skills {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+.skills span {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  min-height: 30px;
+
+  padding: 5px 11px;
+
+  box-sizing: border-box;
+
+  border-radius: 20px;
+
+  background: #eff6ff;
+
+  border: 1px solid #dbeafe;
+
+  color: #2563eb;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.skills span:hover {
+  background: #dbeafe;
+
+  border-color: #bfdbfe;
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================
+   NO SKILLS
+========================================= */
+
+.no-skills {
+  margin: 0;
+
+  color: #9ca3af;
+
+  font-size: 13px;
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 768px) {
+
+  .about-card {
+    max-width: 100%;
+
+    padding: 18px;
+
+    border-radius: 14px;
+  }
+
+  .about-card-header {
+    margin-bottom: 16px;
+  }
+
+  .about-card-header h3 {
+    font-size: 18px;
+  }
+
+  .about-bio p {
+    font-size: 14px;
+  }
+
+  .about-detail-item {
+    padding: 9px 10px;
+  }
+
+  .about-detail-icon {
+    width: 36px;
+    height: 36px;
+
+    font-size: 17px;
+  }
+
+  .about-detail-item p {
+    font-size: 13px;
+  }
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 480px) {
+
+  .about-card {
+    padding: 15px;
+
+    margin-bottom: 14px;
+
+    border-radius: 12px;
+  }
+
+  .about-card-header {
+    margin-bottom: 14px;
+
+    padding-bottom: 10px;
+  }
+
+  .about-card-header h3 {
+    font-size: 17px;
+  }
+
+  .about-bio {
+    margin-bottom: 17px;
+  }
+
+  .about-bio p {
+    font-size: 13px;
+
+    line-height: 1.55;
+  }
+
+  .about-details {
+    gap: 9px;
+
+    margin-bottom: 17px;
+  }
+
+  .about-detail-item {
+    gap: 9px;
+
+    padding: 8px;
+  }
+
+  .about-detail-icon {
+    width: 33px;
+    height: 33px;
+
+    border-radius: 8px;
+
+    font-size: 15px;
+  }
+
+  .about-detail-label {
+    font-size: 10px;
+  }
+
+  .about-detail-item p {
+    font-size: 12px;
+  }
+
+  .about-skills {
+    padding-top: 14px;
+  }
+
+  .about-skills h4 {
+    margin-bottom: 9px;
+
+    font-size: 13px;
+  }
+
+  .skills {
+    gap: 6px;
+  }
+
+  .skills span {
+    min-height: 28px;
+
+    padding: 4px 9px;
+
+    font-size: 11px;
+  }
+}
+
+
+/* =========================================
+   VERY SMALL MOBILE
+========================================= */
+
+@media (max-width: 360px) {
+
+  .about-card {
+    padding: 12px;
+  }
+
+  .about-card-header h3 {
+    font-size: 16px;
+  }
+
+  .about-bio p {
+    font-size: 12px;
+  }
+
+  .about-detail-icon {
+    width: 31px;
+    height: 31px;
+
+    font-size: 14px;
+  }
+
+  .about-detail-item p {
+    font-size: 11px;
+  }
+
+  .skills span {
+    font-size: 10px;
+
+    padding: 4px 8px;
+  }
+}

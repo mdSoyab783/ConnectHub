@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createPost } from "../../services/postService";
 import "./CreatePost.css";
 
@@ -6,6 +6,8 @@ const CreatePost = () => {
   const [caption, setCaption] = useState("");
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const fileInputRef = useRef(null);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -19,6 +21,7 @@ const CreatePost = () => {
       setLoading(true);
 
       const formData = new FormData();
+
       formData.append("caption", caption);
 
       if (image) {
@@ -35,11 +38,14 @@ const CreatePost = () => {
       setImage(null);
 
       // Reset file input
-      document.getElementById("postImage").value = "";
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
 
     } catch (error) {
       alert(
-        error.response?.data?.message || "Failed to create post."
+        error.response?.data?.message ||
+        "Failed to create post."
       );
     } finally {
       setLoading(false);
@@ -49,26 +55,101 @@ const CreatePost = () => {
   return (
     <div className="create-post">
 
-      <h2>Create Post</h2>
+      {/* Header */}
+      <div className="create-post-header">
+        <div className="create-post-icon">
+          ✨
+        </div>
 
+        <div>
+          <h2>Create Post</h2>
+
+          <p>
+            Share something with your community
+          </p>
+        </div>
+      </div>
+
+      {/* Form */}
       <form onSubmit={submitHandler}>
 
+        {/* Caption */}
         <textarea
           placeholder="What's on your mind?"
           value={caption}
-          onChange={(e) => setCaption(e.target.value)}
+          onChange={(e) =>
+            setCaption(e.target.value)
+          }
         />
 
-        <input
-          id="postImage"
-          type="file"
-          accept="image/*"
-          onChange={(e) => setImage(e.target.files[0])}
-        />
+        {/* Selected Image */}
+        {image && (
+          <div className="selected-image">
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Posting..." : "Post"}
-        </button>
+            <div className="selected-image-info">
+              <span>🖼️</span>
+
+              <span>
+                {image.name}
+              </span>
+            </div>
+
+            <button
+              type="button"
+              className="remove-image-button"
+              onClick={() => {
+                setImage(null);
+
+                if (fileInputRef.current) {
+                  fileInputRef.current.value = "";
+                }
+              }}
+            >
+              ✕
+            </button>
+
+          </div>
+        )}
+
+        {/* Bottom Actions */}
+        <div className="create-post-actions">
+
+          <label
+            htmlFor="postImage"
+            className="image-upload-button"
+          >
+            📷
+            <span>Add Photo</span>
+          </label>
+
+          <input
+            ref={fileInputRef}
+            id="postImage"
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              setImage(
+                e.target.files?.[0] || null
+              );
+            }}
+          />
+
+          <button
+            type="submit"
+            className="post-submit-button"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <span className="button-spinner"></span>
+                Posting...
+              </>
+            ) : (
+              "Post"
+            )}
+          </button>
+
+        </div>
 
       </form>
 

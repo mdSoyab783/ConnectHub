@@ -3,7 +3,9 @@ import { useNavigate, Link } from "react-router-dom";
 
 import { registerUser } from "../../services/authService";
 import { useAuth } from "../../context/AuthContext";
+
 import "../../styles/auth.css";
+
 const Register = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -16,6 +18,9 @@ const Register = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] =
+    useState(false);
+  const [error, setError] = useState("");
 
   const changeHandler = (e) => {
     setFormData({
@@ -27,17 +32,19 @@ const Register = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    setLoading(true);
-
     try {
+      setLoading(true);
+      setError("");
+
       const data = await registerUser(formData);
 
       login(data.user, data.token);
 
       navigate("/");
     } catch (error) {
-      alert(
-        error.response?.data?.message || "Registration failed."
+      setError(
+        error.response?.data?.message ||
+        "Registration failed. Please try again."
       );
     } finally {
       setLoading(false);
@@ -45,81 +52,280 @@ const Register = () => {
   };
 
   return (
-    <div
-      style={{
-        maxWidth: "400px",
-        margin: "60px auto",
-        padding: "30px",
-        background: "#fff",
-        borderRadius: "10px",
-        boxShadow: "0 2px 10px rgba(0,0,0,.1)",
-      }}
-    >
-      <h2>Create Account</h2>
+    <div className="auth-page">
 
-      <form onSubmit={submitHandler}>
-        <input
-          type="text"
-          name="fullName"
-          placeholder="Full Name"
-          value={formData.fullName}
-          onChange={changeHandler}
-          required
-        />
+      {/* =========================================
+          LEFT BRAND SECTION
+      ========================================= */}
 
-        <br />
-        <br />
+      <div className="auth-brand">
 
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={formData.username}
-          onChange={changeHandler}
-          required
-        />
+        <div className="auth-brand-content">
 
-        <br />
-        <br />
+          <div className="auth-brand-logo">
+            ConnectHub
+          </div>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={changeHandler}
-          required
-        />
+          <h1>
+            Join the community.
+            <br />
+            Start connecting.
+          </h1>
 
-        <br />
-        <br />
+          <p>
+            Create your ConnectHub account and
+            start sharing, chatting and connecting
+            with people around you.
+          </p>
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={changeHandler}
-          required
-        />
+          <div className="auth-brand-features">
 
-        <br />
-        <br />
+            <div>
+              <span>👥</span>
+              <p>Meet new people</p>
+            </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-        >
-          {loading ? "Creating..." : "Register"}
-        </button>
-      </form>
+            <div>
+              <span>💬</span>
+              <p>Stay connected</p>
+            </div>
 
-      <br />
+            <div>
+              <span>🚀</span>
+              <p>Build your network</p>
+            </div>
 
-      <p>
-        Already have an account?{" "}
-        <Link to="/login">Login</Link>
-      </p>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      {/* =========================================
+          REGISTER SECTION
+      ========================================= */}
+
+      <div className="auth-form-section">
+
+        <div className="auth-card">
+
+          <div className="auth-mobile-logo">
+            ConnectHub
+          </div>
+
+          <div className="auth-heading">
+
+            <h2>
+              Create Account 🚀
+            </h2>
+
+            <p>
+              Join ConnectHub and start connecting
+            </p>
+
+          </div>
+
+
+          <form
+            className="auth-form"
+            onSubmit={submitHandler}
+          >
+
+            {/* FULL NAME */}
+
+            <div className="auth-field">
+
+              <label htmlFor="fullName">
+                Full Name
+              </label>
+
+              <div className="auth-input-wrapper">
+
+                <span className="auth-input-icon">
+                  👤
+                </span>
+
+                <input
+                  id="fullName"
+                  className="auth-input"
+                  type="text"
+                  name="fullName"
+                  placeholder="Enter your full name"
+                  value={formData.fullName}
+                  onChange={changeHandler}
+                  required
+                  autoComplete="name"
+                />
+
+              </div>
+
+            </div>
+
+
+            {/* USERNAME */}
+
+            <div className="auth-field">
+
+              <label htmlFor="username">
+                Username
+              </label>
+
+              <div className="auth-input-wrapper">
+
+                <span className="auth-input-icon">
+                  @
+                </span>
+
+                <input
+                  id="username"
+                  className="auth-input"
+                  type="text"
+                  name="username"
+                  placeholder="Choose a username"
+                  value={formData.username}
+                  onChange={changeHandler}
+                  required
+                  autoComplete="username"
+                />
+
+              </div>
+
+            </div>
+
+
+            {/* EMAIL */}
+
+            <div className="auth-field">
+
+              <label htmlFor="register-email">
+                Email
+              </label>
+
+              <div className="auth-input-wrapper">
+
+                <span className="auth-input-icon">
+                  ✉️
+                </span>
+
+                <input
+                  id="register-email"
+                  className="auth-input"
+                  type="email"
+                  name="email"
+                  placeholder="Enter your email"
+                  value={formData.email}
+                  onChange={changeHandler}
+                  required
+                  autoComplete="email"
+                />
+
+              </div>
+
+            </div>
+
+
+            {/* PASSWORD */}
+
+            <div className="auth-field">
+
+              <label htmlFor="register-password">
+                Password
+              </label>
+
+              <div className="auth-input-wrapper">
+
+                <span className="auth-input-icon">
+                  🔒
+                </span>
+
+                <input
+                  id="register-password"
+                  className="auth-input"
+                  type={
+                    showPassword
+                      ? "text"
+                      : "password"
+                  }
+                  name="password"
+                  placeholder="Create a password"
+                  value={formData.password}
+                  onChange={changeHandler}
+                  required
+                  autoComplete="new-password"
+                />
+
+                <button
+                  type="button"
+                  className="auth-password-toggle"
+                  onClick={() =>
+                    setShowPassword(
+                      (prev) => !prev
+                    )
+                  }
+                  aria-label={
+                    showPassword
+                      ? "Hide password"
+                      : "Show password"
+                  }
+                >
+                  {showPassword
+                    ? "🙈"
+                    : "👁️"}
+                </button>
+
+              </div>
+
+            </div>
+
+
+            {/* ERROR */}
+
+            {error && (
+              <div className="auth-error">
+                ⚠️ {error}
+              </div>
+            )}
+
+
+            {/* REGISTER BUTTON */}
+
+            <button
+              className="auth-btn"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <span className="auth-spinner"></span>
+                  Creating account...
+                </>
+              ) : (
+                "Create Account"
+              )}
+            </button>
+
+          </form>
+
+
+          {/* FOOTER */}
+
+          <div className="auth-footer">
+
+            <span>
+              Already have an account?
+            </span>
+
+            <Link to="/login">
+              Login
+            </Link>
+
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   );
 };

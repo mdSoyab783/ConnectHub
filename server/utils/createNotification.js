@@ -6,6 +6,8 @@ const createNotification = async ({
   type,
   post = null,
   comment = null,
+  conversation = null,
+  message = null,
   io = null,
   onlineUsers = null,
 }) => {
@@ -21,6 +23,8 @@ const createNotification = async ({
       type,
       post,
       comment,
+      conversation,
+      message,
     });
 
     await notification.populate(
@@ -28,7 +32,7 @@ const createNotification = async ({
       "fullName username profileImage"
     );
 
-    // 🔥 Send instantly if recipient is online
+    // Send real-time notification if recipient is online
     if (io && onlineUsers) {
       const socketId = onlineUsers.get(recipient.toString());
 
@@ -38,13 +42,19 @@ const createNotification = async ({
           notification
         );
 
-        console.log("📢 Real-time notification sent");
+        console.log(
+          `📢 ${type} notification sent to ${recipient}`
+        );
       }
     }
 
     return notification;
+
   } catch (error) {
-    console.error("Notification Error:", error.message);
+    console.error(
+      "Notification Error:",
+      error.message
+    );
   }
 };
 

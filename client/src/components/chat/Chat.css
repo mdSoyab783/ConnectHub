@@ -1,0 +1,78 @@
+/* ===========================
+   CHAT HEADER
+=========================== */
+
+.chat-header {
+    height: 80px;
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0 25px;
+}
+
+.chat-user{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.chat-avatar{
+    position:relative;
+}
+
+.chat-online-dot{
+    position:absolute;
+    right:2px;
+    bottom:2px;
+
+    width:14px;
+    height:14px;
+
+    background:#27c93f;
+    border-radius:50%;
+    border:2px solid white;
+}
+
+.chat-user h3{
+    margin:0;
+    font-size:18px;
+}
+
+.chat-user p{
+    margin-top:4px;
+    font-size:13px;
+    color:#666;
+}
+
+.chat-actions{
+    display:flex;
+    gap:10px;
+}
+
+.chat-actions button{
+
+    width:42px;
+    height:42px;
+
+    border:none;
+    border-radius:50%;
+
+    background:#f2f4f7;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.chat-actions button:hover{
+
+    background:#0b57d0;
+    color:white;
+
+    transform:scale(1.08);
+
+}

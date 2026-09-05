@@ -1,3 +1,4 @@
+import "./ProfileStats.css";
 const ProfileStats = ({ profile }) => {
   const followers = Array.isArray(profile.followers)
     ? profile.followers.length
@@ -11,20 +12,22 @@ const ProfileStats = ({ profile }) => {
 
   return (
     <div className="profile-stats">
-      <div>
+
+      <div className="profile-stat-item">
         <h3>{followers}</h3>
         <p>Followers</p>
       </div>
 
-      <div>
+      <div className="profile-stat-item">
         <h3>{following}</h3>
         <p>Following</p>
       </div>
 
-      <div>
+      <div className="profile-stat-item">
         <h3>{posts}</h3>
         <p>Posts</p>
       </div>
+
     </div>
   );
 };

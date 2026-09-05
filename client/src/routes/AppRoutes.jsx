@@ -47,6 +47,19 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+{/* Chat - open Messenger */}
+<Route
+  path="/chat"
+  element={
+    <ProtectedRoute>
+      <MainLayout>
+        <Chat />
+      </MainLayout>
+    </ProtectedRoute>
+  }
+/>
+
+{/* Chat - specific conversation */}
 <Route
   path="/chat/:conversationId"
   element={
