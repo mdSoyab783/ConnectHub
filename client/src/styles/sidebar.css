@@ -5,6 +5,33 @@
 .sidebar {
   width: 100%;
   box-sizing: border-box;
+
+  /* FIXED WHILE FEED SCROLLS */
+  position: sticky;
+  top: 80px;
+
+  height: calc(100vh - 100px);
+
+  overflow-y: auto;
+
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+
+/* Sidebar scrollbar */
+
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
 }
 
 
@@ -44,7 +71,9 @@
 }
 
 
-/* Profile image */
+/* =====================================================
+   PROFILE IMAGE
+===================================================== */
 
 .sidebar-profile-avatar {
   width: 48px;
@@ -78,7 +107,9 @@
 }
 
 
-/* Profile name */
+/* =====================================================
+   PROFILE NAME
+===================================================== */
 
 .sidebar-profile-name {
   min-width: 0;
@@ -333,6 +364,14 @@
 
 @media (max-width: 768px) {
 
+  .sidebar {
+    position: static;
+
+    height: auto;
+
+    overflow: visible;
+  }
+
   .sidebar-profile {
     padding: 9px 10px;
   }
@@ -371,6 +410,14 @@
 ===================================================== */
 
 @media (max-width: 480px) {
+
+  .sidebar {
+    position: static;
+
+    height: auto;
+
+    overflow: visible;
+  }
 
   .sidebar-profile {
     gap: 12px;

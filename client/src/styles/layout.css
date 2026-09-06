@@ -1,94 +1,372 @@
 /* =====================================================
-   MAIN APPLICATION LAYOUT
+   CONNECTHUB MAIN APPLICATION LAYOUT
 ===================================================== */
 
-.layout {
-  display: flex;
 
-  margin-top: 70px;
+/* =====================================================
+   DESKTOP LAYOUT
+===================================================== */
 
-  min-height: calc(100vh - 70px);
+@media (min-width: 993px) {
 
-  width: 100%;
+  .layout {
+    display: flex;
+
+    width: 100%;
+
+    height: calc(100vh - 70px);
+
+    min-height: 0;
+
+    margin-top: 70px;
+
+    overflow: hidden;
+
+    align-items: stretch;
+
+    background: #f5f7fb;
+  }
+
+
+  /* =========================================
+     LEFT SIDEBAR
+  ========================================= */
+
+  .left-sidebar {
+    width: 250px;
+
+    height: 100%;
+
+    flex-shrink: 0;
+
+    box-sizing: border-box;
+
+    overflow-y: auto;
+
+    position: relative;
+
+    background: #ffffff;
+
+    border-right: 1px solid #e5e7eb;
+  }
+
+
+  /* Sidebar content */
+
+  .left-sidebar .sidebar {
+    width: 100%;
+
+    height: auto;
+
+    min-height: 100%;
+
+    position: static;
+
+    overflow: visible;
+
+    box-sizing: border-box;
+  }
+
+
+  /* =========================================
+     MAIN FEED
+  ========================================= */
+
+  .main-content {
+    flex: 1;
+
+    width: auto;
+
+    min-width: 0;
+
+    height: 100%;
+
+    box-sizing: border-box;
+
+    padding: 25px 30px;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+  }
+
+
+  /* =========================================
+     RIGHT SIDEBAR
+  ========================================= */
+
+  .right-sidebar {
+    width: 280px;
+
+    height: 100%;
+
+    flex-shrink: 0;
+
+    box-sizing: border-box;
+
+    overflow-y: auto;
+
+    position: relative;
+
+    background: #ffffff;
+
+    border-left: 1px solid #e5e7eb;
+  }
+
+
+  /* =========================================
+     SCROLLBARS
+  ========================================= */
+
+  .left-sidebar::-webkit-scrollbar,
+  .right-sidebar::-webkit-scrollbar,
+  .main-content::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .left-sidebar::-webkit-scrollbar-track,
+  .right-sidebar::-webkit-scrollbar-track,
+  .main-content::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .left-sidebar::-webkit-scrollbar-thumb,
+  .right-sidebar::-webkit-scrollbar-thumb,
+  .main-content::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+
+    border-radius: 10px;
+  }
+
+  .left-sidebar,
+  .right-sidebar,
+  .main-content {
+    scrollbar-width: thin;
+
+    scrollbar-color: #cbd5e1 transparent;
+  }
+
 }
 
 
 /* =====================================================
-   LEFT SIDEBAR
+   LARGE LAPTOP
 ===================================================== */
 
-.left-sidebar {
-  width: 250px;
+@media (min-width: 993px) and (max-width: 1200px) {
 
-  padding: 20px;
+  .left-sidebar {
+    width: 220px;
 
-  background: white;
+    padding: 18px;
+  }
 
-  border-right: 1px solid #ddd;
+  .right-sidebar {
+    width: 260px;
 
-  box-sizing: border-box;
+    padding: 18px;
+  }
 
-  flex-shrink: 0;
+  .main-content {
+    padding: 22px;
+  }
+
 }
 
 
 /* =====================================================
-   MAIN CONTENT
-===================================================== */
-
-.main-content {
-  flex: 1;
-
-  min-width: 0;
-
-  padding: 25px;
-
-  box-sizing: border-box;
-}
-
-
-/* =====================================================
-   RIGHT SIDEBAR
-===================================================== */
-
-.right-sidebar {
-  width: 280px;
-
-  padding: 20px;
-
-  background: white;
-
-  border-left: 1px solid #ddd;
-
-  box-sizing: border-box;
-
-  flex-shrink: 0;
-}
-
-
-/* =====================================================
-   RESPONSIVE LAYOUT
+   TABLET
 ===================================================== */
 
 @media (max-width: 992px) {
+
+  .layout {
+    display: flex;
+
+    width: 100%;
+
+    min-height: calc(100vh - 70px);
+
+    height: auto;
+
+    margin-top: 70px;
+
+    overflow: visible;
+
+    background: #f5f7fb;
+
+    align-items: stretch;
+  }
+
+
   .right-sidebar {
     display: none;
   }
 
+
   .left-sidebar {
-    width: 200px;
+    width: 210px;
+
+    height: auto;
+
+    padding: 18px 15px;
+
+    overflow: visible;
+
+    position: static;
+
+    box-sizing: border-box;
+
+    background: #ffffff;
+
+    border-right: 1px solid #e5e7eb;
   }
+
+
+  .left-sidebar .sidebar {
+    position: static;
+
+    height: auto;
+
+    overflow: visible;
+  }
+
+
+  .main-content {
+    flex: 1;
+
+    width: auto;
+
+    height: auto;
+
+    min-width: 0;
+
+    overflow: visible;
+
+    padding: 20px;
+
+    box-sizing: border-box;
+  }
+
 }
 
 
+/* =====================================================
+   MOBILE
+===================================================== */
+
 @media (max-width: 768px) {
+
+  .layout {
+    display: block;
+
+    width: 100%;
+
+    height: auto;
+
+    min-height: calc(100vh - 65px);
+
+    margin-top: 65px;
+
+    overflow: visible;
+  }
+
+
   .left-sidebar {
     display: none;
   }
 
-  .main-content {
-    padding: 15px;
+
+  .right-sidebar {
+    display: none;
   }
+
+
+  .main-content {
+    width: 100%;
+
+    height: auto;
+
+    min-height: 0;
+
+    overflow: visible;
+
+    padding: 15px;
+
+    box-sizing: border-box;
+  }
+
+}
+
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media (max-width: 480px) {
+
+  .layout {
+    margin-top: 62px;
+
+    min-height: calc(100vh - 62px);
+  }
+
+
+  .main-content {
+    width: 100%;
+
+    padding: 10px;
+  }
+
+}
+
+
+/* =====================================================
+   VERY SMALL MOBILE
+===================================================== */
+
+@media (max-width: 360px) {
+
+  .main-content {
+    padding: 8px;
+  }
+
+}
+
+
+/* =====================================================
+   PREVENT HORIZONTAL OVERFLOW
+===================================================== */
+
+html,
+body {
+  max-width: 100%;
+
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+
+  max-width: 100%;
+
+  overflow-x: hidden;
+}
+
+
+/* =====================================================
+   BETTER TOUCH EXPERIENCE
+===================================================== */
+
+@media (max-width: 768px) {
+
+  button,
+  a,
+  input,
+  textarea {
+    -webkit-tap-highlight-color: transparent;
+  }
+
 }
 
 
@@ -105,6 +383,7 @@
   position: relative;
 
   width: 42px;
+
   height: 42px;
 
   border: none;
@@ -130,13 +409,19 @@
 }
 
 
+/* =====================================================
+   MESSAGE BADGE
+===================================================== */
+
 .message-badge {
   position: absolute;
 
   top: -4px;
+
   right: -4px;
 
   min-width: 19px;
+
   height: 19px;
 
   padding: 0 5px;
@@ -162,7 +447,7 @@
 
 
 /* =====================================================
-   MESSENGER DROPDOWN
+   MESSAGE DROPDOWN
 ===================================================== */
 
 .message-dropdown {
@@ -334,12 +619,14 @@
 }
 
 
-.message-dropdown-unread .message-dropdown-name {
+.message-dropdown-unread
+.message-dropdown-name {
   font-weight: 700;
 }
 
 
-.message-dropdown-unread .message-dropdown-preview {
+.message-dropdown-unread
+.message-dropdown-preview {
   color: #222;
 
   font-weight: 500;
@@ -434,8 +721,6 @@
 }
 
 
-/* Other user */
-
 .message-other .message-bubble {
   background: white;
 
@@ -447,8 +732,6 @@
     0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
-
-/* Current user */
 
 .message-own .message-bubble {
   background: #0084ff;
@@ -609,15 +892,11 @@
 }
 
 
-/* Show menu button when hovering own message */
-
 .message-own .message-bubble:hover
 .message-menu-button {
   opacity: 1;
 }
 
-
-/* Keep it visible when hovering menu */
 
 .message-menu-container:hover
 .message-menu-button {
@@ -871,267 +1150,6 @@
 
 
 /* =====================================================
-   MOBILE MESSAGE LAYOUT
-===================================================== */
-
-@media (max-width: 768px) {
-  .message-list {
-    padding: 15px 12px;
-  }
-
-  .message-bubble {
-    max-width: 80%;
-  }
-
-  .message-image {
-    max-width: 220px;
-  }
-
-  .message-own .message-menu-container {
-    left: -38px;
-  }
-}
-
-/* =====================================================
-   CONNECTHUB - RESPONSIVE UI POLISH
-   Add this at the END of layout.css
-===================================================== */
-
-
-/* =====================================================
-   GLOBAL LAYOUT POLISH
-===================================================== */
-
-.layout {
-  background: #f5f7fb;
-  align-items: stretch;
-}
-
-.left-sidebar,
-.right-sidebar {
-  background: #ffffff;
-}
-
-.left-sidebar {
-  border-right-color: #e5e7eb;
-}
-
-.right-sidebar {
-  border-left-color: #e5e7eb;
-}
-
-.main-content {
-  min-width: 0;
-  overflow-x: hidden;
-}
-
-
-/* =====================================================
-   DESKTOP
-===================================================== */
-
-@media (min-width: 1201px) {
-
-  .left-sidebar {
-    width: 250px;
-    padding: 20px;
-  }
-
-  .right-sidebar {
-    width: 280px;
-    padding: 20px;
-  }
-
-  .main-content {
-    padding: 25px 30px;
-  }
-
-}
-
-
-/* =====================================================
-   LARGE LAPTOP / TABLET
-===================================================== */
-
-@media (max-width: 1200px) {
-
-  .left-sidebar {
-    width: 220px;
-    padding: 18px;
-  }
-
-  .right-sidebar {
-    width: 260px;
-    padding: 18px;
-  }
-
-  .main-content {
-    padding: 22px;
-  }
-
-}
-
-
-/* =====================================================
-   TABLET
-===================================================== */
-
-@media (max-width: 992px) {
-
-  .layout {
-    margin-top: 70px;
-  }
-
-  .right-sidebar {
-    display: none;
-  }
-
-  .left-sidebar {
-    width: 210px;
-    padding: 18px 15px;
-  }
-
-  .main-content {
-    width: 100%;
-    padding: 20px;
-  }
-
-}
-
-
-/* =====================================================
-   SMALL TABLET / LARGE MOBILE
-===================================================== */
-
-@media (max-width: 768px) {
-
-  .layout {
-    margin-top: 65px;
-    min-height: calc(100vh - 65px);
-  }
-
-  .left-sidebar {
-    display: none;
-  }
-
-  .main-content {
-    width: 100%;
-    padding: 15px;
-    box-sizing: border-box;
-  }
-
-}
-
-
-/* =====================================================
-   MOBILE
-===================================================== */
-
-@media (max-width: 480px) {
-
-  .layout {
-    margin-top: 62px;
-    min-height: calc(100vh - 62px);
-  }
-
-  .main-content {
-    width: 100%;
-    padding: 10px;
-  }
-
-}
-
-
-/* =====================================================
-   VERY SMALL MOBILE
-===================================================== */
-
-@media (max-width: 360px) {
-
-  .main-content {
-    padding: 8px;
-  }
-
-}
-
-
-/* =====================================================
-   PREVENT HORIZONTAL OVERFLOW
-===================================================== */
-
-html,
-body {
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
-#root {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
-
-/* =====================================================
-   BETTER TOUCH EXPERIENCE
-===================================================== */
-
-@media (max-width: 768px) {
-
-  button,
-  a,
-  input,
-  textarea {
-    -webkit-tap-highlight-color: transparent;
-  }
-
-}
-
-
-/* =====================================================
-   MOBILE MESSAGE DROPDOWN
-===================================================== */
-
-@media (max-width: 480px) {
-
-  .message-dropdown {
-    position: fixed;
-
-    top: 62px;
-    left: 10px;
-    right: 10px;
-
-    width: auto;
-    max-width: none;
-
-    border-radius: 14px;
-
-    max-height: calc(100vh - 75px);
-
-    z-index: 99999;
-  }
-
-  .message-dropdown-list {
-    max-height: calc(100vh - 150px);
-  }
-
-}
-
-
-/* =====================================================
-   SMALL MOBILE MESSAGE DROPDOWN
-===================================================== */
-
-@media (max-width: 360px) {
-
-  .message-dropdown {
-    left: 6px;
-    right: 6px;
-    top: 62px;
-  }
-
-}
-/* =====================================================
    SIDEBAR DROPDOWN
 ===================================================== */
 
@@ -1139,6 +1157,7 @@ body {
   position: fixed;
 
   top: 70px;
+
   left: 15px;
 
   width: 250px;
@@ -1150,6 +1169,7 @@ body {
   background: #ffffff;
 
   border: 1px solid #e5e7eb;
+
   border-radius: 14px;
 
   box-shadow:
@@ -1161,15 +1181,18 @@ body {
   animation: sidebar-dropdown-in 0.18s ease-out;
 }
 
+
 @keyframes sidebar-dropdown-in {
 
   from {
     opacity: 0;
+
     transform: translateY(-8px);
   }
 
   to {
     opacity: 1;
+
     transform: translateY(0);
   }
 
@@ -1197,7 +1220,16 @@ body {
 
 .sidebar-dropdown .sidebar {
   width: 100%;
+
+  position: static;
+
+  height: auto;
+
+  min-height: 0;
+
+  overflow-y: auto;
 }
+
 
 .sidebar-dropdown .sidebar-link {
   min-height: 48px;
@@ -1209,62 +1241,61 @@ body {
 
 
 /* =====================================================
-   MAIN LAYOUT WITHOUT LEFT SIDEBAR
+   MOBILE MESSAGE DROPDOWN
 ===================================================== */
 
-.layout {
-  display: flex;
+@media (max-width: 480px) {
 
-  width: 100%;
+  .message-dropdown {
+    position: fixed;
 
-  margin-top: 70px;
+    top: 62px;
 
-  min-height: calc(100vh - 70px);
-}
+    left: 10px;
 
-.main-content {
-  flex: 1;
+    right: 10px;
 
-  min-width: 0;
+    width: auto;
 
-  width: 100%;
+    max-width: none;
 
-  padding: 25px 30px;
+    border-radius: 14px;
 
-  box-sizing: border-box;
-}
+    max-height: calc(100vh - 75px);
+
+    z-index: 99999;
+  }
 
 
-/* =====================================================
-   TABLET
-===================================================== */
-
-@media (max-width: 992px) {
-
-  .main-content {
-    padding: 20px;
+  .message-dropdown-list {
+    max-height: calc(100vh - 150px);
   }
 
 }
 
 
 /* =====================================================
-   MOBILE
+   SMALL MOBILE MESSAGE DROPDOWN
+===================================================== */
+
+@media (max-width: 360px) {
+
+  .message-dropdown {
+    left: 6px;
+
+    right: 6px;
+
+    top: 62px;
+  }
+
+}
+
+
+/* =====================================================
+   MOBILE SIDEBAR DROPDOWN
 ===================================================== */
 
 @media (max-width: 768px) {
-
-  .layout {
-    margin-top: 65px;
-
-    min-height: calc(100vh - 65px);
-  }
-
-  .main-content {
-    width: 100%;
-
-    padding: 15px;
-  }
 
   .sidebar-dropdown {
     top: 65px;
@@ -1277,21 +1308,7 @@ body {
 }
 
 
-/* =====================================================
-   SMALL MOBILE
-===================================================== */
-
 @media (max-width: 480px) {
-
-  .layout {
-    margin-top: 62px;
-
-    min-height: calc(100vh - 62px);
-  }
-
-  .main-content {
-    padding: 10px;
-  }
 
   .sidebar-dropdown {
     top: 62px;
@@ -1308,16 +1325,40 @@ body {
 }
 
 
-/* =====================================================
-   VERY SMALL MOBILE
-===================================================== */
-
 @media (max-width: 360px) {
 
   .sidebar-dropdown {
     left: 6px;
 
     width: 220px;
+  }
+
+}
+
+
+/* =====================================================
+   MOBILE MESSAGE LAYOUT
+===================================================== */
+
+@media (max-width: 768px) {
+
+  .message-list {
+    padding: 15px 12px;
+  }
+
+
+  .message-bubble {
+    max-width: 80%;
+  }
+
+
+  .message-image {
+    max-width: 220px;
+  }
+
+
+  .message-own .message-menu-container {
+    left: -38px;
   }
 
 }
