@@ -1,25 +1,86 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+} from "react";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("user")) || null
-  );
 
-  const [token, setToken] = useState(
-    localStorage.getItem("token") || null
-  );
+  // ==============================
+  // USER
+  // ==============================
+
+  const [user, setUser] = useState(() => {
+    const savedUser =
+      localStorage.getItem("user");
+
+    return savedUser
+      ? JSON.parse(savedUser)
+      : null;
+  });
+
+  // ==============================
+  // TOKEN
+  // ==============================
+
+  const [token, setToken] = useState(() => {
+    return localStorage.getItem("token") || null;
+  });
+
+  // ==============================
+  // LOGIN
+  // ==============================
 
   const login = (userData, jwtToken) => {
+
     setUser(userData);
     setToken(jwtToken);
 
-    localStorage.setItem("user", JSON.stringify(userData));
-    localStorage.setItem("token", jwtToken);
+    localStorage.setItem(
+      "user",
+      JSON.stringify(userData)
+    );
+
+    localStorage.setItem(
+      "token",
+      jwtToken
+    );
   };
 
+  // ==============================
+  // UPDATE USER
+  // ==============================
+
+  const updateUser = (updatedData) => {
+
+    setUser((currentUser) => {
+
+      if (!currentUser) {
+        return updatedData;
+      }
+
+      const updatedUser = {
+        ...currentUser,
+        ...updatedData,
+      };
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(updatedUser)
+      );
+
+      return updatedUser;
+    });
+  };
+
+  // ==============================
+  // LOGOUT
+  // ==============================
+
   const logout = () => {
+
     setUser(null);
     setToken(null);
 
@@ -27,12 +88,17 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
   };
 
+  // ==============================
+  // PROVIDER
+  // ==============================
+
   return (
     <AuthContext.Provider
       value={{
         user,
         token,
         login,
+        updateUser,
         logout,
         isAuthenticated: !!token,
       }}
@@ -42,4 +108,9 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+// ==============================
+// HOOK
+// ==============================
+
+export const useAuth = () =>
+  useContext(AuthContext);
