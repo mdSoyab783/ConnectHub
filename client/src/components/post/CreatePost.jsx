@@ -1,8 +1,11 @@
 import { useRef, useState } from "react";
 import { createPost } from "../../services/postService";
+import { useAuth } from "../../context/AuthContext";
 import "./CreatePost.css";
 
 const CreatePost = () => {
+  const { user } = useAuth();
+
   const [caption, setCaption] = useState("");
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -37,7 +40,6 @@ const CreatePost = () => {
       setCaption("");
       setImage(null);
 
-      // Reset file input
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
@@ -52,35 +54,90 @@ const CreatePost = () => {
     }
   };
 
+  const handleImageChange = (e) => {
+    setImage(e.target.files?.[0] || null);
+  };
+
+  const removeImage = () => {
+    setImage(null);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const firstName =
+    user?.fullName?.split(" ")[0] ||
+    user?.username ||
+    "there";
+
   return (
     <div className="create-post">
 
-      {/* Header */}
-      <div className="create-post-header">
-        <div className="create-post-icon">
-          ✨
-        </div>
-
-        <div>
-          <h2>Create Post</h2>
-
-          <p>
-            Share something with your community
-          </p>
-        </div>
-      </div>
-
-      {/* Form */}
       <form onSubmit={submitHandler}>
 
-        {/* Caption */}
-        <textarea
-          placeholder="What's on your mind?"
-          value={caption}
-          onChange={(e) =>
-            setCaption(e.target.value)
-          }
-        />
+        {/* Main Composer */}
+        <div className="create-post-composer">
+
+          <textarea
+            placeholder={`What's on your mind?`}
+            value={caption}
+            onChange={(e) =>
+              setCaption(e.target.value)
+            }
+          />
+
+          <div className="create-post-actions">
+
+            {/* Photo */}
+            <label
+              htmlFor="postImage"
+              className="create-post-action photo-action"
+              title="Add Photo"
+            >
+              📷
+            </label>
+
+            <input
+              ref={fileInputRef}
+              id="postImage"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+
+            {/* Video */}
+            <button
+              type="button"
+              className="create-post-action video-action"
+              title="Video"
+              onClick={() => {
+                alert("Video posting will be added later.");
+              }}
+            >
+              🎬
+            </button>
+
+            {/* Post */}
+            <button
+              type="submit"
+              className="post-submit-button"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <span className="button-spinner"></span>
+                  Posting...
+                </>
+              ) : (
+                "Post"
+              )}
+            </button>
+
+          </div>
+
+        </div>
+
 
         {/* Selected Image */}
         {image && (
@@ -97,59 +154,13 @@ const CreatePost = () => {
             <button
               type="button"
               className="remove-image-button"
-              onClick={() => {
-                setImage(null);
-
-                if (fileInputRef.current) {
-                  fileInputRef.current.value = "";
-                }
-              }}
+              onClick={removeImage}
             >
               ✕
             </button>
 
           </div>
         )}
-
-        {/* Bottom Actions */}
-        <div className="create-post-actions">
-
-          <label
-            htmlFor="postImage"
-            className="image-upload-button"
-          >
-            📷
-            <span>Add Photo</span>
-          </label>
-
-          <input
-            ref={fileInputRef}
-            id="postImage"
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-              setImage(
-                e.target.files?.[0] || null
-              );
-            }}
-          />
-
-          <button
-            type="submit"
-            className="post-submit-button"
-            disabled={loading}
-          >
-            {loading ? (
-              <>
-                <span className="button-spinner"></span>
-                Posting...
-              </>
-            ) : (
-              "Post"
-            )}
-          </button>
-
-        </div>
 
       </form>
 

@@ -5,11 +5,13 @@
 .create-post {
   width: 100%;
 
+  max-width: 700px;
+
   box-sizing: border-box;
 
-  padding: 22px;
+  padding: 18px 20px;
 
-  margin-bottom: 20px;
+  margin: 0 auto 18px;
 
   background: #ffffff;
 
@@ -29,56 +31,29 @@
   box-shadow:
     0 6px 20px rgba(0, 0, 0, 0.08);
 }
-
-
 /* =====================================================
-   HEADER
+   COMPACT SOCIAL MEDIA COMPOSER
 ===================================================== */
 
-.create-post-header {
-  display: flex;
+.create-post {
+  width: 100%;
 
-  align-items: center;
+  max-width: 700px;
 
-  gap: 12px;
+  margin: 0 auto 18px;
 
-  margin-bottom: 18px;
-}
+  padding: 12px;
 
-.create-post-icon {
-  width: 42px;
+  box-sizing: border-box;
 
-  height: 42px;
+  background: #ffffff;
 
-  display: flex;
+  border: 1px solid #e5e7eb;
 
-  align-items: center;
+  border-radius: 16px;
 
-  justify-content: center;
-
-  border-radius: 12px;
-
-  background: #eef4ff;
-
-  font-size: 21px;
-}
-
-.create-post-header h2 {
-  margin: 0;
-
-  color: #1f2937;
-
-  font-size: 21px;
-
-  font-weight: 750;
-}
-
-.create-post-header p {
-  margin: 3px 0 0;
-
-  color: #6b7280;
-
-  font-size: 13px;
+  box-shadow:
+    0 3px 12px rgba(0, 0, 0, 0.08);
 }
 
 
@@ -92,64 +67,207 @@
 
 
 /* =====================================================
-   TEXTAREA
+   MAIN COMPOSER
+===================================================== */
+
+.create-post-composer {
+  width: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+}
+
+
+/* =====================================================
+   TEXT INPUT
 ===================================================== */
 
 .create-post textarea {
-  display: block;
+  flex: 1;
 
-  width: 100%;
+  width: auto;
 
-  min-height: 105px;
+  min-width: 0;
 
-  padding: 14px 16px;
+  height: 54px;
+
+  min-height: 54px;
+
+  max-height: 100px;
+
+  padding: 14px 18px;
 
   box-sizing: border-box;
 
-  resize: vertical;
+  resize: none;
 
-  border: 1px solid #e5e7eb;
+  border: none;
 
-  border-radius: 12px;
+  border-radius: 28px;
 
-  background: #f9fafb;
+  background: #f0f2f5;
 
   color: #1f2937;
 
   font-family: inherit;
 
-  font-size: 15px;
+  font-size: 17px;
 
-  line-height: 1.5;
+  line-height: 1.4;
 
   outline: none;
 
   transition:
     background 0.2s ease,
-    border-color 0.2s ease,
     box-shadow 0.2s ease;
 }
 
+
 .create-post textarea::placeholder {
-  color: #9ca3af;
+  color: #65676b;
 }
 
-.create-post textarea:focus {
-  background: #ffffff;
 
-  border-color: #2563eb;
+.create-post textarea:focus {
+  background: #e9ebee;
 
   box-shadow:
-    0 0 0 3px rgba(37, 99, 235, 0.1);
+    0 0 0 2px rgba(37, 99, 235, 0.08);
 }
 
 
 /* =====================================================
-   HIDE ORIGINAL FILE INPUT
+   ACTIONS
+===================================================== */
+
+.create-post-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  flex-shrink: 0;
+}
+
+
+/* =====================================================
+   ACTION ICONS
+===================================================== */
+
+.create-post-action {
+  width: 42px;
+
+  height: 42px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background: transparent;
+
+  font-size: 22px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease;
+}
+
+
+.create-post-action:hover {
+  background: #f0f2f5;
+
+  transform: scale(1.05);
+}
+
+
+.photo-action {
+  color: #22a447;
+}
+
+
+.video-action {
+  color: #f43f5e;
+}
+
+
+/* =====================================================
+   HIDE FILE INPUT
 ===================================================== */
 
 .create-post input[type="file"] {
   display: none;
+}
+
+
+/* =====================================================
+   POST BUTTON
+===================================================== */
+
+.post-submit-button {
+  min-width: 70px;
+
+  height: 42px;
+
+  padding: 0 18px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 6px;
+
+  border: none;
+
+  border-radius: 21px;
+
+  background: #2563eb;
+
+  color: white;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease;
+}
+
+
+.post-submit-button:hover:not(:disabled) {
+  background: #1d4ed8;
+
+  transform: translateY(-1px);
+}
+
+
+.post-submit-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+
+.post-submit-button:disabled {
+  opacity: 0.65;
+
+  cursor: not-allowed;
 }
 
 
@@ -166,9 +284,9 @@
 
   gap: 10px;
 
-  margin-top: 12px;
+  margin-top: 10px;
 
-  padding: 10px 12px;
+  padding: 8px 10px;
 
   background: #f3f6fb;
 
@@ -176,6 +294,7 @@
 
   border-radius: 10px;
 }
+
 
 .selected-image-info {
   display: flex;
@@ -190,6 +309,7 @@
 
   font-size: 13px;
 }
+
 
 .selected-image-info span:last-child {
   overflow: hidden;
@@ -226,13 +346,8 @@
   color: #374151;
 
   cursor: pointer;
-
-  font-size: 13px;
-
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
 }
+
 
 .remove-image-button:hover {
   background: #fee2e2;
@@ -242,124 +357,13 @@
 
 
 /* =====================================================
-   ACTIONS
-===================================================== */
-
-.create-post-actions {
-  display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
-  gap: 12px;
-
-  margin-top: 14px;
-}
-
-
-/* =====================================================
-   IMAGE UPLOAD BUTTON
-===================================================== */
-
-.image-upload-button {
-  display: inline-flex;
-
-  align-items: center;
-
-  gap: 7px;
-
-  padding: 9px 13px;
-
-  border-radius: 9px;
-
-  color: #374151;
-
-  background: #f3f4f6;
-
-  font-size: 13px;
-
-  font-weight: 600;
-
-  cursor: pointer;
-
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
-}
-
-.image-upload-button:hover {
-  background: #e8eef9;
-
-  color: #2563eb;
-}
-
-
-/* =====================================================
-   POST BUTTON
-===================================================== */
-
-.post-submit-button {
-  min-width: 82px;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  gap: 7px;
-
-  padding: 10px 18px;
-
-  border: none;
-
-  border-radius: 9px;
-
-  background: #2563eb;
-
-  color: white;
-
-  font-size: 14px;
-
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transition:
-    background 0.2s ease,
-    transform 0.15s ease,
-    box-shadow 0.2s ease;
-}
-
-.post-submit-button:hover:not(:disabled) {
-  background: #1d4ed8;
-
-  transform: translateY(-1px);
-
-  box-shadow:
-    0 4px 10px rgba(37, 99, 235, 0.25);
-}
-
-.post-submit-button:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-.post-submit-button:disabled {
-  opacity: 0.65;
-
-  cursor: not-allowed;
-}
-
-
-/* =====================================================
-   BUTTON SPINNER
+   SPINNER
 ===================================================== */
 
 .button-spinner {
-  width: 14px;
+  width: 13px;
 
-  height: 14px;
+  height: 13px;
 
   border: 2px solid rgba(255, 255, 255, 0.4);
 
@@ -370,145 +374,13 @@
   animation: create-post-spin 0.7s linear infinite;
 }
 
+
 @keyframes create-post-spin {
+
   to {
     transform: rotate(360deg);
   }
-}
 
-
-/* =====================================================
-   FEED
-===================================================== */
-
-.feed {
-  width: 100%;
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 18px;
-}
-
-
-/* =====================================================
-   FEED STATES
-===================================================== */
-
-.feed-state {
-  min-height: 220px;
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-
-  justify-content: center;
-
-  padding: 30px;
-
-  box-sizing: border-box;
-
-  text-align: center;
-
-  color: #6b7280;
-
-  background: rgba(255, 255, 255, 0.96);
-
-  border: 1px solid #e5e7eb;
-
-  border-radius: 16px;
-
-  box-shadow:
-    0 3px 12px rgba(0, 0, 0, 0.05);
-}
-
-.feed-state-icon {
-  width: 52px;
-
-  height: 52px;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  margin-bottom: 12px;
-
-  border-radius: 50%;
-
-  background: #eef4ff;
-
-  font-size: 24px;
-}
-
-.feed-state h3 {
-  margin: 0 0 5px;
-
-  color: #1f2937;
-
-  font-size: 18px;
-}
-
-.feed-state p {
-  margin: 0;
-
-  max-width: 400px;
-
-  font-size: 14px;
-
-  line-height: 1.5;
-}
-
-
-/* =====================================================
-   FEED ERROR
-===================================================== */
-
-.feed-error .feed-state-icon {
-  background: #fef2f2;
-}
-
-.feed-error h3 {
-  color: #b91c1c;
-}
-
-
-/* =====================================================
-   RETRY BUTTON
-===================================================== */
-
-.feed-retry-button {
-  margin-top: 15px;
-
-  padding: 8px 16px;
-
-  border: none;
-
-  border-radius: 8px;
-
-  background: #2563eb;
-
-  color: white;
-
-  font-size: 13px;
-
-  font-weight: 600;
-
-  cursor: pointer;
-
-  transition:
-    background 0.2s ease,
-    transform 0.15s ease;
-}
-
-.feed-retry-button:hover {
-  background: #1d4ed8;
-
-  transform: translateY(-1px);
 }
 
 
@@ -519,63 +391,40 @@
 @media (max-width: 768px) {
 
   .create-post {
-    padding: 17px;
+    width: 100%;
 
-    border-radius: 13px;
+    max-width: 100%;
+
+    padding: 10px;
+
+    margin-bottom: 14px;
+
+    border-radius: 14px;
   }
 
-  .create-post-header h2 {
-    font-size: 19px;
+
+  .create-post-composer {
+    gap: 7px;
   }
+
 
   .create-post textarea {
-    min-height: 90px;
+    height: 46px;
+
+    min-height: 46px;
+
+    padding: 12px 15px;
 
     font-size: 14px;
   }
 
-  .image-upload-button span {
-    display: none;
+
+  .create-post-actions {
+    gap: 2px;
   }
 
-  .image-upload-button {
-    width: 40px;
 
-    height: 38px;
-
-    padding: 0;
-
-    justify-content: center;
-  }
-
-  .post-submit-button {
-    min-width: 75px;
-  }
-
-  .feed {
-    gap: 14px;
-  }
-
-}
-
-
-/* =====================================================
-   SMALL MOBILE
-===================================================== */
-
-@media (max-width: 480px) {
-
-  .create-post {
-    padding: 14px;
-  }
-
-  .create-post-header {
-    gap: 9px;
-
-    margin-bottom: 13px;
-  }
-
-  .create-post-icon {
+  .create-post-action {
     width: 36px;
 
     height: 36px;
@@ -583,20 +432,108 @@
     font-size: 18px;
   }
 
-  .create-post-header h2 {
+
+  .post-submit-button {
+    min-width: 58px;
+
+    height: 36px;
+
+    padding: 0 12px;
+
+    font-size: 13px;
+  }
+
+}
+
+
+/* =====================================================
+   SMALL PHONE
+===================================================== */
+
+@media (max-width: 480px) {
+
+  .create-post {
+    padding: 8px;
+
+    border-radius: 12px;
+  }
+
+
+  .create-post-composer {
+    gap: 4px;
+  }
+
+
+  .create-post textarea {
+    height: 42px;
+
+    min-height: 42px;
+
+    padding: 10px 13px;
+
+    font-size: 13px;
+  }
+
+
+  .create-post-action {
+    width: 32px;
+
+    height: 32px;
+
     font-size: 17px;
   }
 
-  .create-post-header p {
-    font-size: 11px;
+
+  .post-submit-button {
+    min-width: 50px;
+
+    height: 32px;
+
+    padding: 0 9px;
+
+    font-size: 12px;
   }
 
+}
+
+
+/* =====================================================
+   VERY SMALL PHONE
+===================================================== */
+
+@media (max-width: 360px) {
+
+  .create-post {
+    padding: 7px;
+  }
+
+
   .create-post textarea {
-    min-height: 80px;
+    font-size: 12px;
 
-    padding: 12px;
+    padding-left: 11px;
 
-    font-size: 13px;
+    padding-right: 11px;
+  }
+
+
+  .create-post-action {
+    width: 29px;
+
+    height: 29px;
+
+    font-size: 15px;
+  }
+
+
+  .post-submit-button {
+    min-width: 45px;
+
+    height: 29px;
+
+    padding: 0 7px;
+
+    font-size: 11px;
   }
 
 }
