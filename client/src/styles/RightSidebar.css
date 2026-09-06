@@ -1,0 +1,217 @@
+/* =========================================
+   RIGHT SIDEBAR
+========================================= */
+
+.right-sidebar-content {
+  width: 100%;
+}
+
+
+/* =========================================
+   SECTION
+========================================= */
+
+.right-sidebar-section {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 18px;
+}
+
+
+/* =========================================
+   SECTION HEADING
+========================================= */
+
+.right-sidebar-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.right-sidebar-heading h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: #111827;
+}
+
+
+/* =========================================
+   ONLINE DOT
+========================================= */
+
+.online-heading-dot {
+  width: 9px;
+  height: 9px;
+  background: #22c55e;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+
+/* =========================================
+   SUGGESTED USERS
+========================================= */
+
+.right-sidebar-section .suggested-users {
+  width: 100%;
+}
+
+.right-sidebar-section .suggested-users h3 {
+  display: none;
+}
+
+
+/* =========================================
+   ONLINE FRIENDS
+========================================= */
+
+.online-friends {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+
+/* =========================================
+   FRIEND
+========================================= */
+
+.online-friend {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 9px 7px;
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+.online-friend:hover {
+  background: #f3f4f6;
+}
+
+
+/* =========================================
+   AVATAR
+========================================= */
+
+.online-friend-avatar-wrapper {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+}
+
+.online-friend-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+
+/* =========================================
+   ONLINE STATUS DOT
+========================================= */
+
+.online-dot {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+
+  width: 11px;
+  height: 11px;
+
+  background: #22c55e;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+}
+
+
+/* =========================================
+   FRIEND INFO
+========================================= */
+
+.online-friend-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.online-friend-info strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.online-friend-info span {
+  margin-top: 2px;
+  font-size: 12px;
+  color: #6b7280;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* =========================================
+   EMPTY / LOADING
+========================================= */
+
+.online-friends-empty {
+  margin: 5px 0;
+  color: #6b7280;
+  font-size: 13px;
+  text-align: center;
+  padding: 10px 0;
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 1100px) {
+
+  .right-sidebar-section {
+    padding: 13px;
+  }
+
+  .online-friend {
+    gap: 8px;
+  }
+
+  .online-friend-avatar-wrapper,
+  .online-friend-avatar {
+    width: 38px;
+    height: 38px;
+  }
+
+  .online-dot {
+    width: 10px;
+    height: 10px;
+  }
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 768px) {
+
+  .right-sidebar-content {
+    width: 100%;
+  }
+
+}

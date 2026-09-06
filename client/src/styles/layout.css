@@ -2,169 +2,146 @@
    CONNECTHUB MAIN LAYOUT
 ===================================================== */
 
+.layout {
+  display: flex;
+
+  width: 100%;
+
+  height: calc(100vh - 70px);
+
+  margin-top: 70px;
+
+  overflow: hidden;
+
+  background: #f5f7fb;
+}
+
 
 /* =====================================================
-   DESKTOP
-   993px+
+   LEFT SIDEBAR
 ===================================================== */
 
-@media (min-width: 993px) {
+.left-sidebar {
+  width: 250px;
 
-  .layout {
-    display: flex;
+  height: 100%;
 
-    width: 100%;
-    height: calc(100vh - 70px);
+  flex-shrink: 0;
 
-    margin-top: 70px;
+  box-sizing: border-box;
 
-    min-height: 0;
+  overflow-y: auto;
 
-    overflow: hidden;
+  overflow-x: hidden;
 
-    background: #f5f7fb;
+  background: #ffffff;
 
-    align-items: stretch;
-  }
+  border-right: 1px solid #e5e7eb;
 
+  scrollbar-width: thin;
 
-  /* =========================================
-     LEFT SIDEBAR
-  ========================================= */
+  scrollbar-color: #cbd5e1 transparent;
+}
 
-  .left-sidebar {
-    width: 250px;
+.left-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
 
-    height: 100%;
+.left-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
 
-    flex-shrink: 0;
+.left-sidebar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
 
-    box-sizing: border-box;
-
-    overflow-y: auto;
-    overflow-x: hidden;
-
-    background: #ffffff;
-
-    border-right: 1px solid #e5e7eb;
-
-    scrollbar-width: thin;
-    scrollbar-color: #cbd5e1 transparent;
-  }
+  border-radius: 10px;
+}
 
 
-  .left-sidebar::-webkit-scrollbar {
-    width: 6px;
-  }
+/* =====================================================
+   MAIN FEED
+===================================================== */
 
-  .left-sidebar::-webkit-scrollbar-track {
-    background: transparent;
-  }
+.main-content {
+  flex: 1;
 
-  .left-sidebar::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 10px;
-  }
+  min-width: 0;
 
+  height: 100%;
 
-  .left-sidebar .sidebar {
-    width: 100%;
+  box-sizing: border-box;
 
-    height: auto;
+  overflow-y: auto;
 
-    min-height: 100%;
+  overflow-x: hidden;
 
-    position: static;
+  padding: 25px 35px;
 
-    overflow: visible;
+  scrollbar-width: thin;
 
-    box-sizing: border-box;
-  }
+  scrollbar-color: #cbd5e1 transparent;
+}
 
+.main-content::-webkit-scrollbar {
+  width: 6px;
+}
 
-  /* =========================================
-     CENTER FEED
-  ========================================= */
+.main-content::-webkit-scrollbar-track {
+  background: transparent;
+}
 
-  .main-content {
-    flex: 1;
+.main-content::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
 
-    width: auto;
-
-    min-width: 0;
-
-    height: 100%;
-
-    box-sizing: border-box;
-
-    overflow-y: auto;
-    overflow-x: hidden;
-
-    padding: 25px 30px;
-
-    scrollbar-width: thin;
-    scrollbar-color: #cbd5e1 transparent;
-  }
+  border-radius: 10px;
+}
 
 
-  .main-content::-webkit-scrollbar {
-    width: 6px;
-  }
+/* =====================================================
+   RIGHT SIDEBAR
+===================================================== */
 
-  .main-content::-webkit-scrollbar-track {
-    background: transparent;
-  }
+.right-sidebar {
+  width: 285px;
 
-  .main-content::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 10px;
-  }
+  height: 100%;
 
+  flex-shrink: 0;
 
-  /* =========================================
-     RIGHT SIDEBAR
-  ========================================= */
+  box-sizing: border-box;
 
-  .right-sidebar {
-    width: 280px;
+  overflow-y: auto;
 
-    height: 100%;
+  overflow-x: hidden;
 
-    flex-shrink: 0;
+  padding: 22px 18px;
 
-    box-sizing: border-box;
+  background: #ffffff;
 
-    overflow-y: auto;
-    overflow-x: hidden;
+  border-left: 1px solid #e5e7eb;
 
-    background: #ffffff;
+  scrollbar-width: thin;
 
-    border-left: 1px solid #e5e7eb;
+  scrollbar-color: #cbd5e1 transparent;
+}
 
-    scrollbar-width: thin;
-    scrollbar-color: #cbd5e1 transparent;
-  }
+.right-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
 
+.right-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
 
-  .right-sidebar::-webkit-scrollbar {
-    width: 6px;
-  }
+.right-sidebar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
 
-  .right-sidebar::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .right-sidebar::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 10px;
-  }
-
+  border-radius: 10px;
 }
 
 
 /* =====================================================
    LARGE DESKTOP
-   1441px+
 ===================================================== */
 
 @media (min-width: 1441px) {
@@ -178,8 +155,9 @@
   }
 
   .main-content {
-    padding-left: 40px;
-    padding-right: 40px;
+    padding-left: 45px;
+
+    padding-right: 45px;
   }
 
 }
@@ -197,7 +175,7 @@
   }
 
   .right-sidebar {
-    width: 290px;
+    width: 285px;
   }
 
 }
@@ -215,7 +193,7 @@
   }
 
   .right-sidebar {
-    width: 250px;
+    width: 245px;
   }
 
   .main-content {
@@ -233,67 +211,25 @@
 @media (min-width: 769px) and (max-width: 992px) {
 
   .layout {
-    display: flex;
-
-    width: 100%;
+    height: auto;
 
     min-height: calc(100vh - 68px);
 
     margin-top: 68px;
 
     overflow: visible;
-
-    background: #f5f7fb;
   }
-
-
-  /* Left sidebar remains visible */
 
   .left-sidebar {
-    display: block;
-
     width: 205px;
 
-    flex-shrink: 0;
-
-    height: auto;
-
-    overflow: visible;
-
-    box-sizing: border-box;
-
-    background: #ffffff;
-
-    border-right: 1px solid #e5e7eb;
-  }
-
-
-  .left-sidebar .sidebar {
-    position: static;
-
-    width: 100%;
-
     height: auto;
 
     overflow: visible;
   }
-
-
-  /* Right sidebar hidden */
-
-  .right-sidebar {
-    display: none;
-  }
-
-
-  /* Feed */
 
   .main-content {
     flex: 1;
-
-    width: auto;
-
-    min-width: 0;
 
     height: auto;
 
@@ -302,11 +238,15 @@
     padding: 20px;
   }
 
+  .right-sidebar {
+    display: none;
+  }
+
 }
 
 
 /* =====================================================
-   LARGE PHONE / SMALL TABLET
+   MOBILE
    601px - 768px
 ===================================================== */
 
@@ -314,8 +254,6 @@
 
   .layout {
     display: block;
-
-    width: 100%;
 
     height: auto;
 
@@ -326,36 +264,26 @@
     overflow: visible;
   }
 
-
-  .left-sidebar {
-    display: none;
-  }
-
-
+  .left-sidebar,
   .right-sidebar {
     display: none;
   }
-
 
   .main-content {
     width: 100%;
 
     height: auto;
 
-    min-width: 0;
-
-    overflow: visible;
-
     padding: 15px 18px;
 
-    box-sizing: border-box;
+    overflow: visible;
   }
 
 }
 
 
 /* =====================================================
-   NORMAL PHONE
+   MOBILE
    481px - 600px
 ===================================================== */
 
@@ -363,8 +291,6 @@
 
   .layout {
     display: block;
-
-    width: 100%;
 
     height: auto;
 
@@ -375,29 +301,19 @@
     overflow: visible;
   }
 
-
-  .left-sidebar {
-    display: none;
-  }
-
-
+  .left-sidebar,
   .right-sidebar {
     display: none;
   }
-
 
   .main-content {
     width: 100%;
 
     height: auto;
 
-    min-width: 0;
-
-    overflow: visible;
-
     padding: 12px;
 
-    box-sizing: border-box;
+    overflow: visible;
   }
 
 }
@@ -413,8 +329,6 @@
   .layout {
     display: block;
 
-    width: 100%;
-
     height: auto;
 
     min-height: calc(100vh - 62px);
@@ -424,29 +338,19 @@
     overflow: visible;
   }
 
-
-  .left-sidebar {
-    display: none;
-  }
-
-
+  .left-sidebar,
   .right-sidebar {
     display: none;
   }
-
 
   .main-content {
     width: 100%;
 
     height: auto;
 
-    min-width: 0;
-
-    overflow: visible;
-
     padding: 10px;
 
-    box-sizing: border-box;
+    overflow: visible;
   }
 
 }
@@ -462,8 +366,6 @@
   .layout {
     display: block;
 
-    width: 100%;
-
     height: auto;
 
     min-height: calc(100vh - 60px);
@@ -473,45 +375,32 @@
     overflow: visible;
   }
 
-
-  .left-sidebar {
-    display: none;
-  }
-
-
+  .left-sidebar,
   .right-sidebar {
     display: none;
   }
-
 
   .main-content {
     width: 100%;
 
     height: auto;
 
-    min-width: 0;
-
-    overflow: visible;
-
     padding: 8px;
 
-    box-sizing: border-box;
+    overflow: visible;
   }
 
 }
 
 
 /* =====================================================
-   EXTRA SMALL PHONE
-   Below 320px
+   EXTRA SMALL
 ===================================================== */
 
 @media (max-width: 319px) {
 
   .layout {
     display: block;
-
-    width: 100%;
 
     height: auto;
 
@@ -520,966 +409,34 @@
     overflow: visible;
   }
 
-
-  .left-sidebar {
-    display: none;
-  }
-
-
+  .left-sidebar,
   .right-sidebar {
     display: none;
   }
-
 
   .main-content {
     width: 100%;
 
     height: auto;
 
-    overflow: visible;
-
     padding: 6px;
 
-    box-sizing: border-box;
+    overflow: visible;
   }
 
 }
 
 
 /* =====================================================
-   GLOBAL HORIZONTAL OVERFLOW PROTECTION
+   GLOBAL OVERFLOW
 ===================================================== */
 
 html,
-body {
-  max-width: 100%;
-
-  overflow-x: hidden;
-}
-
-
+body,
 #root {
   width: 100%;
 
   max-width: 100%;
 
   overflow-x: hidden;
-}
-
-
-/* =====================================================
-   MOBILE TOUCH
-===================================================== */
-
-@media (max-width: 768px) {
-
-  button,
-  a,
-  input,
-  textarea {
-    -webkit-tap-highlight-color: transparent;
-  }
-
-}
-
-
-/* =====================================================
-   MESSENGER DROPDOWN
-===================================================== */
-
-.message-dropdown-container {
-  position: relative;
-}
-
-
-.message-button {
-  position: relative;
-
-  width: 42px;
-  height: 42px;
-
-  border: none;
-
-  border-radius: 50%;
-
-  background: #f0f2f5;
-
-  font-size: 21px;
-
-  cursor: pointer;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-}
-
-
-.message-button:hover {
-  background: #e4e6eb;
-}
-
-
-.message-badge {
-  position: absolute;
-
-  top: -4px;
-  right: -4px;
-
-  min-width: 19px;
-  height: 19px;
-
-  padding: 0 5px;
-
-  background: #e41e3f;
-
-  color: white;
-
-  border-radius: 999px;
-
-  font-size: 11px;
-
-  font-weight: bold;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  box-sizing: border-box;
-}
-
-
-.message-dropdown {
-  position: absolute;
-
-  top: 50px;
-  right: -80px;
-
-  width: 350px;
-
-  background: white;
-
-  border-radius: 12px;
-
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.15),
-    0 8px 25px rgba(0, 0, 0, 0.1);
-
-  overflow: hidden;
-
-  z-index: 1000;
-}
-
-
-.message-dropdown-header {
-  padding: 16px 18px;
-
-  border-bottom: 1px solid #eee;
-}
-
-
-.message-dropdown-header h3 {
-  margin: 0;
-
-  font-size: 20px;
-}
-
-
-.message-dropdown-list {
-  max-height: 380px;
-
-  overflow-y: auto;
-}
-
-
-.message-dropdown-item {
-  display: flex;
-
-  align-items: center;
-
-  gap: 12px;
-
-  padding: 12px 15px;
-
-  cursor: pointer;
-}
-
-
-.message-dropdown-item:hover {
-  background: #f5f6f7;
-}
-
-
-.message-dropdown-content {
-  flex: 1;
-
-  min-width: 0;
-}
-
-
-.message-dropdown-name {
-  display: flex;
-
-  align-items: center;
-
-  gap: 8px;
-
-  font-weight: 600;
-
-  font-size: 15px;
-}
-
-
-.message-dropdown-preview {
-  margin-top: 3px;
-
-  color: #65676b;
-
-  font-size: 13px;
-
-  white-space: nowrap;
-
-  overflow: hidden;
-
-  text-overflow: ellipsis;
-}
-
-
-.small-unread-badge {
-  min-width: 18px;
-
-  height: 18px;
-
-  padding: 0 5px;
-
-  background: #e41e3f;
-
-  color: white;
-
-  border-radius: 999px;
-
-  font-size: 10px;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  box-sizing: border-box;
-}
-
-
-.no-messages {
-  padding: 30px 20px;
-
-  text-align: center;
-
-  color: #65676b;
-}
-
-
-.see-all-messages {
-  width: 100%;
-
-  padding: 14px;
-
-  border: none;
-
-  border-top: 1px solid #eee;
-
-  background: white;
-
-  color: #1877f2;
-
-  font-weight: 600;
-
-  cursor: pointer;
-}
-
-
-.see-all-messages:hover {
-  background: #f5f6f7;
-}
-
-
-/* =====================================================
-   UNREAD CONVERSATION
-===================================================== */
-
-.message-dropdown-unread {
-  background: #f0f7ff;
-}
-
-
-.message-dropdown-unread:hover {
-  background: #e5f1ff;
-}
-
-
-.message-dropdown-unread
-.message-dropdown-name {
-  font-weight: 700;
-}
-
-
-.message-dropdown-unread
-.message-dropdown-preview {
-  color: #222;
-
-  font-weight: 500;
-}
-
-
-/* =====================================================
-   MESSAGE LIST
-===================================================== */
-
-.message-list {
-  width: 100%;
-
-  height: 100%;
-
-  padding: 20px 25px;
-
-  box-sizing: border-box;
-
-  overflow-y: auto;
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 12px;
-
-  background: #f0f2f5;
-}
-
-
-.message-list.empty {
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  color: #65676b;
-
-  font-size: 15px;
-}
-
-
-/* =====================================================
-   MESSAGE ROW
-===================================================== */
-
-.message-row {
-  width: 100%;
-
-  display: flex;
-
-  align-items: flex-end;
-
-  gap: 8px;
-
-  box-sizing: border-box;
-}
-
-
-.message-other {
-  justify-content: flex-start;
-}
-
-
-.message-own {
-  justify-content: flex-end;
-}
-
-
-/* =====================================================
-   MESSAGE BUBBLE
-===================================================== */
-
-.message-bubble {
-  position: relative;
-
-  max-width: 65%;
-
-  min-width: 50px;
-
-  padding: 8px 12px 5px;
-
-  border-radius: 16px;
-
-  box-sizing: border-box;
-
-  word-break: break-word;
-
-  overflow-wrap: anywhere;
-}
-
-
-.message-other .message-bubble {
-  background: white;
-
-  color: #111;
-
-  border-bottom-left-radius: 4px;
-
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.08);
-}
-
-
-.message-own .message-bubble {
-  background: #0084ff;
-
-  color: white;
-
-  border-bottom-right-radius: 4px;
-
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.08);
-}
-
-
-.message-text {
-  font-size: 15px;
-
-  line-height: 1.4;
-
-  white-space: pre-wrap;
-
-  word-break: break-word;
-
-  padding-right: 2px;
-}
-
-
-.message-image {
-  display: block;
-
-  max-width: 280px;
-  max-height: 320px;
-
-  width: auto;
-  height: auto;
-
-  object-fit: cover;
-
-  border-radius: 12px;
-
-  margin-bottom: 5px;
-}
-
-
-.message-meta {
-  display: flex;
-
-  align-items: center;
-
-  justify-content: flex-end;
-
-  gap: 4px;
-
-  margin-top: 3px;
-
-  font-size: 10px;
-
-  line-height: 12px;
-}
-
-
-.message-other .message-meta {
-  color: #65676b;
-}
-
-
-.message-own .message-meta {
-  color: rgba(255, 255, 255, 0.85);
-}
-
-
-.message-status {
-  font-size: 11px;
-
-  font-weight: 600;
-}
-
-
-.edited-label {
-  font-size: 9px;
-
-  font-style: italic;
-
-  opacity: 0.75;
-
-  margin-left: 3px;
-}
-
-
-/* =====================================================
-   MESSAGE MENU
-===================================================== */
-
-.message-menu-container {
-  position: absolute;
-
-  top: 50%;
-
-  left: -42px;
-
-  transform: translateY(-50%);
-
-  z-index: 50;
-}
-
-
-.message-menu-button {
-  width: 32px;
-  height: 32px;
-
-  border: none;
-
-  border-radius: 50%;
-
-  background: #e4e6eb;
-
-  color: #333;
-
-  font-size: 21px;
-
-  line-height: 1;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  cursor: pointer;
-
-  opacity: 0;
-
-  transition:
-    opacity 0.15s ease,
-    background 0.15s ease;
-}
-
-
-.message-own .message-bubble:hover
-.message-menu-button {
-  opacity: 1;
-}
-
-
-.message-menu-container:hover
-.message-menu-button {
-  opacity: 1;
-}
-
-
-.message-menu-button:hover {
-  background: #d8dadf;
-}
-
-
-.message-menu {
-  position: absolute;
-
-  top: 38px;
-  right: 0;
-
-  width: 130px;
-
-  padding: 5px;
-
-  background: white;
-
-  border-radius: 8px;
-
-  box-shadow:
-    0 4px 15px rgba(0, 0, 0, 0.18);
-
-  z-index: 100;
-}
-
-
-.message-menu button {
-  width: 100%;
-
-  border: none;
-
-  background: white;
-
-  padding: 9px 10px;
-
-  cursor: pointer;
-
-  border-radius: 6px;
-
-  text-align: left;
-
-  white-space: nowrap;
-
-  font-size: 14px;
-}
-
-
-.message-menu button:hover {
-  background: #f0f2f5;
-}
-
-
-/* =====================================================
-   EDIT MESSAGE
-===================================================== */
-
-.edit-message-container {
-  min-width: 240px;
-
-  max-width: 320px;
-}
-
-
-.edit-message-input {
-  width: 100%;
-
-  min-height: 65px;
-
-  padding: 9px 10px;
-
-  box-sizing: border-box;
-
-  border: 1px solid #ccd0d5;
-
-  border-radius: 8px;
-
-  resize: vertical;
-
-  font-size: 14px;
-
-  font-family: inherit;
-
-  outline: none;
-}
-
-
-.edit-message-input:focus {
-  border-color: #1877f2;
-}
-
-
-.edit-message-actions {
-  display: flex;
-
-  justify-content: flex-end;
-
-  gap: 7px;
-
-  margin-top: 7px;
-}
-
-
-.edit-message-actions button {
-  border: none;
-
-  padding: 6px 12px;
-
-  border-radius: 6px;
-
-  font-size: 13px;
-
-  font-weight: 600;
-
-  cursor: pointer;
-}
-
-
-.cancel-edit {
-  background: #e4e6eb;
-
-  color: #333;
-}
-
-
-.save-edit {
-  background: #1877f2;
-
-  color: white;
-}
-
-
-/* =====================================================
-   DELETE CONFIRMATION
-===================================================== */
-
-.delete-overlay {
-  position: fixed;
-
-  inset: 0;
-
-  background: rgba(0, 0, 0, 0.45);
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  z-index: 9999;
-}
-
-
-.delete-dialog {
-  width: 360px;
-
-  max-width: calc(100vw - 40px);
-
-  background: white;
-
-  border-radius: 12px;
-
-  padding: 22px;
-
-  box-sizing: border-box;
-
-  box-shadow:
-    0 8px 30px rgba(0, 0, 0, 0.25);
-}
-
-
-.delete-dialog h3 {
-  margin: 0 0 8px;
-
-  font-size: 18px;
-}
-
-
-.delete-dialog p {
-  margin: 0;
-
-  color: #65676b;
-
-  font-size: 14px;
-}
-
-
-.delete-actions {
-  display: flex;
-
-  justify-content: flex-end;
-
-  gap: 10px;
-
-  margin-top: 20px;
-}
-
-
-.cancel-delete,
-.confirm-delete {
-  border: none;
-
-  padding: 9px 18px;
-
-  border-radius: 6px;
-
-  cursor: pointer;
-
-  font-weight: 600;
-}
-
-
-.cancel-delete {
-  background: #e4e6eb;
-
-  color: #333;
-}
-
-
-.confirm-delete {
-  background: #e41e3f;
-
-  color: white;
-}
-
-
-/* =====================================================
-   SIDEBAR DROPDOWN
-===================================================== */
-
-.sidebar-dropdown {
-  position: fixed;
-
-  top: 70px;
-  left: 15px;
-
-  width: 250px;
-
-  padding: 14px;
-
-  box-sizing: border-box;
-
-  background: #ffffff;
-
-  border: 1px solid #e5e7eb;
-
-  border-radius: 14px;
-
-  box-shadow:
-    0 12px 35px rgba(0, 0, 0, 0.14),
-    0 3px 10px rgba(0, 0, 0, 0.06);
-
-  z-index: 9998;
-
-  animation: sidebar-dropdown-in 0.18s ease-out;
-}
-
-
-@keyframes sidebar-dropdown-in {
-
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-}
-
-
-.sidebar-overlay {
-  position: fixed;
-
-  inset: 0;
-
-  background: rgba(15, 23, 42, 0.08);
-
-  z-index: 9997;
-}
-
-
-.sidebar-dropdown .sidebar {
-  width: 100%;
-
-  position: static;
-
-  height: auto;
-
-  min-height: 0;
-
-  overflow-y: auto;
-}
-
-
-/* =====================================================
-   MOBILE DROPDOWNS
-===================================================== */
-
-@media (max-width: 768px) {
-
-  .sidebar-dropdown {
-    top: 65px;
-
-    left: 10px;
-
-    width: 240px;
-  }
-
-}
-
-
-@media (max-width: 480px) {
-
-  .sidebar-dropdown {
-    top: 62px;
-
-    left: 8px;
-
-    width: 230px;
-
-    padding: 10px;
-
-    border-radius: 12px;
-  }
-
-
-  .message-dropdown {
-    position: fixed;
-
-    top: 62px;
-
-    left: 10px;
-    right: 10px;
-
-    width: auto;
-
-    max-width: none;
-
-    border-radius: 14px;
-
-    max-height: calc(100vh - 75px);
-
-    z-index: 99999;
-  }
-
-
-  .message-dropdown-list {
-    max-height: calc(100vh - 150px);
-  }
-
-}
-
-
-@media (max-width: 360px) {
-
-  .sidebar-dropdown {
-    left: 6px;
-
-    width: 220px;
-  }
-
-
-  .message-dropdown {
-    left: 6px;
-
-    right: 6px;
-
-    top: 58px;
-  }
-
-}
-
-
-/* =====================================================
-   MOBILE MESSAGES
-===================================================== */
-
-@media (max-width: 768px) {
-
-  .message-list {
-    padding: 15px 12px;
-  }
-
-
-  .message-bubble {
-    max-width: 80%;
-  }
-
-
-  .message-image {
-    max-width: 220px;
-  }
-
-
-  .message-own .message-menu-container {
-    left: -38px;
-  }
-
 }

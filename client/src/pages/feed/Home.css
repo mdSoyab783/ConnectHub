@@ -1,31 +1,42 @@
+/* =========================================
+   HOME
+========================================= */
+
 .home-layout {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 24px;
-  max-width: 1300px;
+  width: 100%;
+  max-width: 680px;
   margin: 20px auto;
-  padding: 0 20px;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .feed-section {
+  width: 100%;
   min-width: 0;
 }
 
-.sidebar-section {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  position: sticky;
-  top: 80px;
-  align-self: start;
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 992px) {
+  .home-layout {
+    width: 100%;
+    max-width: 680px;
+  }
 }
 
-@media (max-width: 900px) {
-  .home-layout {
-    grid-template-columns: 1fr;
-  }
 
-  .sidebar-section {
-    position: static;
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 768px) {
+  .home-layout {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 10px;
+    box-sizing: border-box;
   }
 }
