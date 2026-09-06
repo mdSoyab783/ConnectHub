@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-
+import { getImageUrl } from "../../utils/image";
 import { useAuth } from "../../context/AuthContext";
 import NotificationBell from "../notification/NotificationBell";
 import SearchBar from "../search/SearchBar";
@@ -123,12 +123,9 @@ const Navbar = ({
 
               {user?.profileImage ? (
                 <img
-                  src={`${import.meta.env.VITE_SOCKET_URL || "http://localhost:3000"}${user.profileImage}`}
-                  alt={
-                    user?.fullName ||
-                    "User"
-                  }
-                />
+  src={getImageUrl(user.profileImage)}
+  alt={user?.fullName || "User"}
+/>
               ) : (
                 <span>
                   {
@@ -169,12 +166,9 @@ const Navbar = ({
 
                   {user?.profileImage ? (
                     <img
-                      src={`${import.meta.env.VITE_SOCKET_URL || "http://localhost:3000"}${user.profileImage}`}
-                      alt={
-                        user?.fullName ||
-                        "User"
-                      }
-                    />
+  src={getImageUrl(user.profileImage)}
+  alt={user?.fullName || "User"}
+/>
                   ) : (
                     <span>
                       {
