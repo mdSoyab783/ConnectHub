@@ -8,23 +8,57 @@ import AboutCard from "../../components/profile/AboutCard";
 import UserPosts from "../../components/profile/UserPosts";
 import EditProfileModal from "../../components/profile/EditProfileModal";
 
+import { useAuth } from "../../context/AuthContext";
+
 import "./Profile.css";
 
 const Profile = () => {
+
   const [profile, setProfile] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+
+  const [showModal, setShowModal] =
+    useState(false);
+
+  const { updateUser } = useAuth();
+
 
   // =========================================
   // LOAD PROFILE
   // =========================================
 
   const loadProfile = async () => {
-    try {
-      const response = await profileService.getMyProfile();
 
-      setProfile(response.user);
+    try {
+
+      const response =
+        await profileService.getMyProfile();
+
+      const updatedProfile =
+        response.user;
+
+      // =====================================
+      // UPDATE PROFILE PAGE
+      // =====================================
+
+      setProfile(updatedProfile);
+
+
+      // =====================================
+      // UPDATE AUTH CONTEXT
+      // =====================================
+
+      updateUser({
+        ...updatedProfile,
+      });
+
+
     } catch (error) {
-      console.log("Profile loading error:", error);
+
+      console.log(
+        "Profile loading error:",
+        error
+      );
+
     }
   };
 
@@ -34,7 +68,9 @@ const Profile = () => {
   // =========================================
 
   useEffect(() => {
+
     loadProfile();
+
   }, []);
 
 
@@ -43,12 +79,15 @@ const Profile = () => {
   // =========================================
 
   if (!profile) {
+
     return (
       <div className="profile-loading">
 
         <div className="profile-loading-spinner"></div>
 
-        <p>Loading profile...</p>
+        <p>
+          Loading profile...
+        </p>
 
       </div>
     );
@@ -62,16 +101,22 @@ const Profile = () => {
   return (
     <div className="profile-page">
 
+
       {/* =====================================
           PROFILE HEADER
       ===================================== */}
 
-      <section className="profile-section profile-header-section">
+      <section
+        className="profile-section profile-header-section"
+      >
 
         <ProfileHeader
           profile={profile}
+          setProfile={setProfile}
           reloadProfile={loadProfile}
-          openEditModal={() => setShowModal(true)}
+          openEditModal={() =>
+            setShowModal(true)
+          }
         />
 
       </section>
@@ -107,7 +152,9 @@ const Profile = () => {
           USER POSTS
       ===================================== */}
 
-      <section className="profile-section profile-posts-section">
+      <section
+        className="profile-section profile-posts-section"
+      >
 
         <UserPosts
           userId={profile._id}
@@ -121,11 +168,15 @@ const Profile = () => {
       ===================================== */}
 
       {showModal && (
+
         <EditProfileModal
           profile={profile}
           reloadProfile={loadProfile}
-          closeModal={() => setShowModal(false)}
+          closeModal={() =>
+            setShowModal(false)
+          }
         />
+
       )}
 
     </div>
