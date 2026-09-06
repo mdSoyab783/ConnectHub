@@ -1,4 +1,6 @@
-const BASE_URL = "https://connecthub-ad1z.onrender.com";
+const BASE_URL =
+  import.meta.env.VITE_SOCKET_URL ||
+  "http://localhost:3000";
 
 export const getImageUrl = (imagePath) => {
   if (!imagePath) {
