@@ -1,10 +1,11 @@
 /* =====================================================
-   CONNECTHUB MAIN APPLICATION LAYOUT
+   CONNECTHUB MAIN LAYOUT
 ===================================================== */
 
 
 /* =====================================================
-   DESKTOP LAYOUT
+   DESKTOP
+   993px+
 ===================================================== */
 
 @media (min-width: 993px) {
@@ -13,18 +14,17 @@
     display: flex;
 
     width: 100%;
-
     height: calc(100vh - 70px);
-
-    min-height: 0;
 
     margin-top: 70px;
 
+    min-height: 0;
+
     overflow: hidden;
 
-    align-items: stretch;
-
     background: #f5f7fb;
+
+    align-items: stretch;
   }
 
 
@@ -42,16 +42,30 @@
     box-sizing: border-box;
 
     overflow-y: auto;
-
-    position: relative;
+    overflow-x: hidden;
 
     background: #ffffff;
 
     border-right: 1px solid #e5e7eb;
+
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
   }
 
 
-  /* Sidebar content */
+  .left-sidebar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .left-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .left-sidebar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+  }
+
 
   .left-sidebar .sidebar {
     width: 100%;
@@ -69,7 +83,7 @@
 
 
   /* =========================================
-     MAIN FEED
+     CENTER FEED
   ========================================= */
 
   .main-content {
@@ -83,11 +97,27 @@
 
     box-sizing: border-box;
 
+    overflow-y: auto;
+    overflow-x: hidden;
+
     padding: 25px 30px;
 
-    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+  }
 
-    overflow-x: hidden;
+
+  .main-content::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .main-content::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .main-content::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
   }
 
 
@@ -105,66 +135,87 @@
     box-sizing: border-box;
 
     overflow-y: auto;
-
-    position: relative;
+    overflow-x: hidden;
 
     background: #ffffff;
 
     border-left: 1px solid #e5e7eb;
+
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
   }
 
 
-  /* =========================================
-     SCROLLBARS
-  ========================================= */
-
-  .left-sidebar::-webkit-scrollbar,
-  .right-sidebar::-webkit-scrollbar,
-  .main-content::-webkit-scrollbar {
+  .right-sidebar::-webkit-scrollbar {
     width: 6px;
   }
 
-  .left-sidebar::-webkit-scrollbar-track,
-  .right-sidebar::-webkit-scrollbar-track,
-  .main-content::-webkit-scrollbar-track {
+  .right-sidebar::-webkit-scrollbar-track {
     background: transparent;
   }
 
-  .left-sidebar::-webkit-scrollbar-thumb,
-  .right-sidebar::-webkit-scrollbar-thumb,
-  .main-content::-webkit-scrollbar-thumb {
+  .right-sidebar::-webkit-scrollbar-thumb {
     background: #cbd5e1;
-
     border-radius: 10px;
-  }
-
-  .left-sidebar,
-  .right-sidebar,
-  .main-content {
-    scrollbar-width: thin;
-
-    scrollbar-color: #cbd5e1 transparent;
   }
 
 }
 
 
 /* =====================================================
-   LARGE LAPTOP
+   LARGE DESKTOP
+   1441px+
+===================================================== */
+
+@media (min-width: 1441px) {
+
+  .left-sidebar {
+    width: 270px;
+  }
+
+  .right-sidebar {
+    width: 310px;
+  }
+
+  .main-content {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+}
+
+
+/* =====================================================
+   NORMAL DESKTOP
+   1201px - 1440px
+===================================================== */
+
+@media (min-width: 1201px) and (max-width: 1440px) {
+
+  .left-sidebar {
+    width: 250px;
+  }
+
+  .right-sidebar {
+    width: 290px;
+  }
+
+}
+
+
+/* =====================================================
+   SMALL LAPTOP
+   993px - 1200px
 ===================================================== */
 
 @media (min-width: 993px) and (max-width: 1200px) {
 
   .left-sidebar {
     width: 220px;
-
-    padding: 18px;
   }
 
   .right-sidebar {
-    width: 260px;
-
-    padding: 18px;
+    width: 250px;
   }
 
   .main-content {
@@ -176,44 +227,38 @@
 
 /* =====================================================
    TABLET
+   769px - 992px
 ===================================================== */
 
-@media (max-width: 992px) {
+@media (min-width: 769px) and (max-width: 992px) {
 
   .layout {
     display: flex;
 
     width: 100%;
 
-    min-height: calc(100vh - 70px);
+    min-height: calc(100vh - 68px);
 
-    height: auto;
-
-    margin-top: 70px;
+    margin-top: 68px;
 
     overflow: visible;
 
     background: #f5f7fb;
-
-    align-items: stretch;
   }
 
 
-  .right-sidebar {
-    display: none;
-  }
-
+  /* Left sidebar remains visible */
 
   .left-sidebar {
-    width: 210px;
+    display: block;
+
+    width: 205px;
+
+    flex-shrink: 0;
 
     height: auto;
 
-    padding: 18px 15px;
-
     overflow: visible;
-
-    position: static;
 
     box-sizing: border-box;
 
@@ -226,36 +271,46 @@
   .left-sidebar .sidebar {
     position: static;
 
+    width: 100%;
+
     height: auto;
 
     overflow: visible;
   }
 
+
+  /* Right sidebar hidden */
+
+  .right-sidebar {
+    display: none;
+  }
+
+
+  /* Feed */
 
   .main-content {
     flex: 1;
 
     width: auto;
 
-    height: auto;
-
     min-width: 0;
+
+    height: auto;
 
     overflow: visible;
 
     padding: 20px;
-
-    box-sizing: border-box;
   }
 
 }
 
 
 /* =====================================================
-   MOBILE
+   LARGE PHONE / SMALL TABLET
+   601px - 768px
 ===================================================== */
 
-@media (max-width: 768px) {
+@media (min-width: 601px) and (max-width: 768px) {
 
   .layout {
     display: block;
@@ -287,11 +342,11 @@
 
     height: auto;
 
-    min-height: 0;
+    min-width: 0;
 
     overflow: visible;
 
-    padding: 15px;
+    padding: 15px 18px;
 
     box-sizing: border-box;
   }
@@ -300,42 +355,199 @@
 
 
 /* =====================================================
-   SMALL MOBILE
+   NORMAL PHONE
+   481px - 600px
 ===================================================== */
 
-@media (max-width: 480px) {
+@media (min-width: 481px) and (max-width: 600px) {
 
   .layout {
-    margin-top: 62px;
+    display: block;
 
-    min-height: calc(100vh - 62px);
+    width: 100%;
+
+    height: auto;
+
+    min-height: calc(100vh - 64px);
+
+    margin-top: 64px;
+
+    overflow: visible;
+  }
+
+
+  .left-sidebar {
+    display: none;
+  }
+
+
+  .right-sidebar {
+    display: none;
   }
 
 
   .main-content {
     width: 100%;
 
-    padding: 10px;
+    height: auto;
+
+    min-width: 0;
+
+    overflow: visible;
+
+    padding: 12px;
+
+    box-sizing: border-box;
   }
 
 }
 
 
 /* =====================================================
-   VERY SMALL MOBILE
+   SMALL PHONE
+   376px - 480px
 ===================================================== */
 
-@media (max-width: 360px) {
+@media (min-width: 376px) and (max-width: 480px) {
+
+  .layout {
+    display: block;
+
+    width: 100%;
+
+    height: auto;
+
+    min-height: calc(100vh - 62px);
+
+    margin-top: 62px;
+
+    overflow: visible;
+  }
+
+
+  .left-sidebar {
+    display: none;
+  }
+
+
+  .right-sidebar {
+    display: none;
+  }
+
 
   .main-content {
-    padding: 8px;
+    width: 100%;
+
+    height: auto;
+
+    min-width: 0;
+
+    overflow: visible;
+
+    padding: 10px;
+
+    box-sizing: border-box;
   }
 
 }
 
 
 /* =====================================================
-   PREVENT HORIZONTAL OVERFLOW
+   VERY SMALL PHONE
+   320px - 375px
+===================================================== */
+
+@media (min-width: 320px) and (max-width: 375px) {
+
+  .layout {
+    display: block;
+
+    width: 100%;
+
+    height: auto;
+
+    min-height: calc(100vh - 60px);
+
+    margin-top: 60px;
+
+    overflow: visible;
+  }
+
+
+  .left-sidebar {
+    display: none;
+  }
+
+
+  .right-sidebar {
+    display: none;
+  }
+
+
+  .main-content {
+    width: 100%;
+
+    height: auto;
+
+    min-width: 0;
+
+    overflow: visible;
+
+    padding: 8px;
+
+    box-sizing: border-box;
+  }
+
+}
+
+
+/* =====================================================
+   EXTRA SMALL PHONE
+   Below 320px
+===================================================== */
+
+@media (max-width: 319px) {
+
+  .layout {
+    display: block;
+
+    width: 100%;
+
+    height: auto;
+
+    margin-top: 58px;
+
+    overflow: visible;
+  }
+
+
+  .left-sidebar {
+    display: none;
+  }
+
+
+  .right-sidebar {
+    display: none;
+  }
+
+
+  .main-content {
+    width: 100%;
+
+    height: auto;
+
+    overflow: visible;
+
+    padding: 6px;
+
+    box-sizing: border-box;
+  }
+
+}
+
+
+/* =====================================================
+   GLOBAL HORIZONTAL OVERFLOW PROTECTION
 ===================================================== */
 
 html,
@@ -344,6 +556,7 @@ body {
 
   overflow-x: hidden;
 }
+
 
 #root {
   width: 100%;
@@ -355,7 +568,7 @@ body {
 
 
 /* =====================================================
-   BETTER TOUCH EXPERIENCE
+   MOBILE TOUCH
 ===================================================== */
 
 @media (max-width: 768px) {
@@ -383,7 +596,6 @@ body {
   position: relative;
 
   width: 42px;
-
   height: 42px;
 
   border: none;
@@ -409,19 +621,13 @@ body {
 }
 
 
-/* =====================================================
-   MESSAGE BADGE
-===================================================== */
-
 .message-badge {
   position: absolute;
 
   top: -4px;
-
   right: -4px;
 
   min-width: 19px;
-
   height: 19px;
 
   padding: 0 5px;
@@ -446,15 +652,10 @@ body {
 }
 
 
-/* =====================================================
-   MESSAGE DROPDOWN
-===================================================== */
-
 .message-dropdown {
   position: absolute;
 
   top: 50px;
-
   right: -80px;
 
   width: 350px;
@@ -745,10 +946,6 @@ body {
 }
 
 
-/* =====================================================
-   MESSAGE TEXT
-===================================================== */
-
 .message-text {
   font-size: 15px;
 
@@ -762,19 +959,13 @@ body {
 }
 
 
-/* =====================================================
-   MESSAGE IMAGE
-===================================================== */
-
 .message-image {
   display: block;
 
   max-width: 280px;
-
   max-height: 320px;
 
   width: auto;
-
   height: auto;
 
   object-fit: cover;
@@ -784,10 +975,6 @@ body {
   margin-bottom: 5px;
 }
 
-
-/* =====================================================
-   MESSAGE META
-===================================================== */
 
 .message-meta {
   display: flex;
@@ -816,20 +1003,12 @@ body {
 }
 
 
-/* =====================================================
-   MESSAGE STATUS
-===================================================== */
-
 .message-status {
   font-size: 11px;
 
   font-weight: 600;
 }
 
-
-/* =====================================================
-   EDITED LABEL
-===================================================== */
 
 .edited-label {
   font-size: 9px;
@@ -861,7 +1040,6 @@ body {
 
 .message-menu-button {
   width: 32px;
-
   height: 32px;
 
   border: none;
@@ -909,15 +1087,10 @@ body {
 }
 
 
-/* =====================================================
-   MESSAGE MENU DROPDOWN
-===================================================== */
-
 .message-menu {
   position: absolute;
 
   top: 38px;
-
   right: 0;
 
   width: 130px;
@@ -1033,20 +1206,10 @@ body {
 }
 
 
-.cancel-edit:hover {
-  background: #d8dadf;
-}
-
-
 .save-edit {
   background: #1877f2;
 
   color: white;
-}
-
-
-.save-edit:hover {
-  background: #166fe5;
 }
 
 
@@ -1137,11 +1300,6 @@ body {
 }
 
 
-.cancel-delete:hover {
-  background: #d8dadf;
-}
-
-
 .confirm-delete {
   background: #e41e3f;
 
@@ -1157,7 +1315,6 @@ body {
   position: fixed;
 
   top: 70px;
-
   left: 15px;
 
   width: 250px;
@@ -1186,22 +1343,16 @@ body {
 
   from {
     opacity: 0;
-
     transform: translateY(-8px);
   }
 
   to {
     opacity: 1;
-
     transform: translateY(0);
   }
 
 }
 
-
-/* =====================================================
-   SIDEBAR OVERLAY
-===================================================== */
 
 .sidebar-overlay {
   position: fixed;
@@ -1213,10 +1364,6 @@ body {
   z-index: 9997;
 }
 
-
-/* =====================================================
-   SIDEBAR INSIDE DROPDOWN
-===================================================== */
 
 .sidebar-dropdown .sidebar {
   width: 100%;
@@ -1231,68 +1378,8 @@ body {
 }
 
 
-.sidebar-dropdown .sidebar-link {
-  min-height: 48px;
-
-  padding: 0 14px;
-
-  border-radius: 10px;
-}
-
-
 /* =====================================================
-   MOBILE MESSAGE DROPDOWN
-===================================================== */
-
-@media (max-width: 480px) {
-
-  .message-dropdown {
-    position: fixed;
-
-    top: 62px;
-
-    left: 10px;
-
-    right: 10px;
-
-    width: auto;
-
-    max-width: none;
-
-    border-radius: 14px;
-
-    max-height: calc(100vh - 75px);
-
-    z-index: 99999;
-  }
-
-
-  .message-dropdown-list {
-    max-height: calc(100vh - 150px);
-  }
-
-}
-
-
-/* =====================================================
-   SMALL MOBILE MESSAGE DROPDOWN
-===================================================== */
-
-@media (max-width: 360px) {
-
-  .message-dropdown {
-    left: 6px;
-
-    right: 6px;
-
-    top: 62px;
-  }
-
-}
-
-
-/* =====================================================
-   MOBILE SIDEBAR DROPDOWN
+   MOBILE DROPDOWNS
 ===================================================== */
 
 @media (max-width: 768px) {
@@ -1322,6 +1409,31 @@ body {
     border-radius: 12px;
   }
 
+
+  .message-dropdown {
+    position: fixed;
+
+    top: 62px;
+
+    left: 10px;
+    right: 10px;
+
+    width: auto;
+
+    max-width: none;
+
+    border-radius: 14px;
+
+    max-height: calc(100vh - 75px);
+
+    z-index: 99999;
+  }
+
+
+  .message-dropdown-list {
+    max-height: calc(100vh - 150px);
+  }
+
 }
 
 
@@ -1333,11 +1445,20 @@ body {
     width: 220px;
   }
 
+
+  .message-dropdown {
+    left: 6px;
+
+    right: 6px;
+
+    top: 58px;
+  }
+
 }
 
 
 /* =====================================================
-   MOBILE MESSAGE LAYOUT
+   MOBILE MESSAGES
 ===================================================== */
 
 @media (max-width: 768px) {
