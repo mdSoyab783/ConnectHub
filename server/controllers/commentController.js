@@ -1,10 +1,15 @@
 const Comment = require("../models/Comment");
 const Post = require("../models/Post");
 const createNotification = require("../utils/createNotification");
+
+// =========================================
+// ADD COMMENT / REPLY
+// =========================================
+
 exports.addComment = async (req, res) => {
   try {
     const { postId } = req.params;
-    const { text } = req.body;
+    const { text, parentComment } = req.body;
 
     if (!text || !text.trim()) {
       return res.status(400).json({
@@ -12,6 +17,10 @@ exports.addComment = async (req, res) => {
         message: "Comment text is required",
       });
     }
+
+    // =====================================
+    // FIND POST
+    // =====================================
 
     const post = await Post.findById(postId);
 
@@ -22,50 +31,111 @@ exports.addComment = async (req, res) => {
       });
     }
 
+    // =====================================
+    // CHECK PARENT COMMENT
+    // =====================================
+
+    if (parentComment) {
+      const parent = await Comment.findById(parentComment);
+
+      if (!parent) {
+        return res.status(404).json({
+          success: false,
+          message: "Parent comment not found",
+        });
+      }
+
+      // Make sure parent belongs to the same post
+      if (parent.post.toString() !== postId.toString()) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid parent comment",
+        });
+      }
+    }
+
+    // =====================================
+    // CREATE COMMENT / REPLY
+    // =====================================
+
     const comment = await Comment.create({
-  post: postId,
-  user: req.user._id,
-  text,
-});
+      post: postId,
+      user: req.user._id,
+      text: text.trim(),
+      parentComment: parentComment || null,
+    });
 
-await comment.populate(
-  "user",
-  "fullName username profileImage"
-);
+    await comment.populate(
+      "user",
+      "fullName username profileImage"
+    );
 
-post.commentsCount += 1;
-await post.save();
+    // =====================================
+    // INCREASE COMMENT COUNT
+    // =====================================
 
-const io = req.app.get("io");
-const onlineUsers = req.app.get("onlineUsers");
+    post.commentsCount += 1;
 
-io.emit("postCommented", {
-  postId: post._id,
-  commentsCount: post.commentsCount,
-});
+    await post.save();
 
-await createNotification({
-  recipient: post.user,
-  sender: req.user._id,
-  type: "comment",
-  post: post._id,
-  comment: comment._id,
-  io,
-  onlineUsers,
-});
+    const io = req.app.get("io");
+    const onlineUsers = req.app.get("onlineUsers");
 
-res.status(201).json({
-  success: true,
-  message: "Comment added successfully",
-  comment,
-});
+    // =====================================
+    // REAL-TIME NEW COMMENT / REPLY
+    // =====================================
+
+    io.emit("postCommented", {
+      postId: post._id,
+      comment,
+      commentsCount: post.commentsCount,
+    });
+
+    // =====================================
+    // NOTIFICATION
+    // =====================================
+
+    await createNotification({
+      recipient: post.user,
+      sender: req.user._id,
+      type: "comment",
+      post: post._id,
+      comment: comment._id,
+      io,
+      onlineUsers,
+    });
+
+    // =====================================
+    // RESPONSE
+    // =====================================
+
+    return res.status(201).json({
+      success: true,
+      message: parentComment
+        ? "Reply added successfully"
+        : "Comment added successfully",
+      comment,
+      commentsCount: post.commentsCount,
+    });
+
   } catch (error) {
-    res.status(500).json({
+    console.error(
+      "Add comment error:",
+      error
+    );
+
+    return res.status(500).json({
       success: false,
       message: error.message,
     });
   }
 };
+
+
+// =========================================
+// GET COMMENTS
+// =========================================
+
 exports.getComments = async (req, res) => {
   try {
     const { postId } = req.params;
@@ -73,26 +143,52 @@ exports.getComments = async (req, res) => {
     const comments = await Comment.find({
       post: postId,
     })
-      .populate("user", "fullName username profileImage")
-      .sort({ createdAt: -1 });
+      .populate(
+        "user",
+        "fullName username profileImage"
+      )
+      .sort({
+        createdAt: -1,
+      });
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       count: comments.length,
       comments,
     });
+
   } catch (error) {
-    res.status(500).json({
+    console.error(
+      "Get comments error:",
+      error
+    );
+
+    return res.status(500).json({
       success: false,
       message: error.message,
     });
   }
 };
-exports.deleteComment = async (req, res) => {
+
+
+// =========================================
+// EDIT COMMENT
+// =========================================
+
+exports.editComment = async (req, res) => {
   try {
     const { commentId } = req.params;
+    const { text } = req.body;
 
-    const comment = await Comment.findById(commentId);
+    if (!text || !text.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Comment text is required",
+      });
+    }
+
+    const comment =
+      await Comment.findById(commentId);
 
     if (!comment) {
       return res.status(404).json({
@@ -101,41 +197,156 @@ exports.deleteComment = async (req, res) => {
       });
     }
 
-    if (comment.user.toString() !== req.user._id.toString()) {
+    // =====================================
+    // AUTHORIZATION
+    // =====================================
+
+    if (
+      comment.user.toString() !==
+      req.user._id.toString()
+    ) {
       return res.status(403).json({
         success: false,
         message: "Not authorized",
       });
     }
 
-const updatedPost = await Post.findByIdAndUpdate(
-  comment.post,
-  {
-    $inc: {
-      commentsCount: -1,
-    },
-  },
-  {
-    new: true,
+    // =====================================
+    // UPDATE COMMENT
+    // =====================================
+
+    comment.text = text.trim();
+
+    await comment.save();
+
+    await comment.populate(
+      "user",
+      "fullName username profileImage"
+    );
+
+    const io = req.app.get("io");
+
+    // =====================================
+    // REAL-TIME COMMENT UPDATE
+    // =====================================
+
+    io.emit("commentUpdated", {
+      postId: comment.post,
+      comment,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Comment updated successfully",
+      comment,
+    });
+
+  } catch (error) {
+    console.error(
+      "Edit comment error:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
-);
+};
 
-const io = req.app.get("io");
 
-io.emit("commentDeleted", {
-  postId: updatedPost._id,
-  commentId: comment._id,
-  commentsCount: updatedPost.commentsCount,
-});
+// =========================================
+// DELETE COMMENT
+// =========================================
 
-await comment.deleteOne();
+exports.deleteComment = async (req, res) => {
+  try {
+    const { commentId } = req.params;
 
-    res.status(200).json({
+    const comment =
+      await Comment.findById(commentId);
+
+    if (!comment) {
+      return res.status(404).json({
+        success: false,
+        message: "Comment not found",
+      });
+    }
+
+    // =====================================
+    // AUTHORIZATION
+    // =====================================
+
+    if (
+      comment.user.toString() !==
+      req.user._id.toString()
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: "Not authorized",
+      });
+    }
+
+    // =====================================
+    // DELETE REPLIES TOO
+    // =====================================
+
+    const replyCount = await Comment.countDocuments({
+      parentComment: comment._id,
+    });
+
+    await Comment.deleteMany({
+      parentComment: comment._id,
+    });
+
+    // =====================================
+    // UPDATE POST COMMENT COUNT
+    // =====================================
+
+    const totalDeleted = 1 + replyCount;
+
+    const updatedPost =
+      await Post.findByIdAndUpdate(
+        comment.post,
+        {
+          $inc: {
+            commentsCount: -totalDeleted,
+          },
+        },
+        {
+          new: true,
+        }
+      );
+
+    const io = req.app.get("io");
+
+    // =====================================
+    // REAL-TIME DELETE
+    // =====================================
+
+    io.emit("commentDeleted", {
+      postId: updatedPost._id,
+      commentId: comment._id,
+      commentsCount:
+        updatedPost.commentsCount,
+    });
+
+    await comment.deleteOne();
+
+    return res.status(200).json({
       success: true,
       message: "Comment deleted successfully",
+      commentsCount:
+        updatedPost.commentsCount,
     });
+
   } catch (error) {
-    res.status(500).json({
+    console.error(
+      "Delete comment error:",
+      error
+    );
+
+    return res.status(500).json({
       success: false,
       message: error.message,
     });

@@ -5,18 +5,55 @@ const router = express.Router();
 const {
   addComment,
   getComments,
+  editComment,
   deleteComment,
 } = require("../controllers/commentController");
 
-const { protect } = require("../middleware/authMiddleware");
+const {
+  protect,
+} = require("../middleware/authMiddleware");
 
-// Add Comment
-router.post("/:postId", protect, addComment);
+// =========================================
+// ADD COMMENT
+// =========================================
 
-// Get Comments
-router.get("/:postId", getComments);
+router.post(
+  "/:postId",
+  protect,
+  addComment
+);
 
-// Delete Comment
-router.delete("/:commentId", protect, deleteComment);
+
+// =========================================
+// GET COMMENTS
+// =========================================
+
+router.get(
+  "/:postId",
+  getComments
+);
+
+
+// =========================================
+// EDIT COMMENT
+// =========================================
+
+router.put(
+  "/:commentId",
+  protect,
+  editComment
+);
+
+
+// =========================================
+// DELETE COMMENT
+// =========================================
+
+router.delete(
+  "/:commentId",
+  protect,
+  deleteComment
+);
+
 
 module.exports = router;
