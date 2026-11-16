@@ -269,3 +269,9 @@ const PORT = process.env.PORT || 5000;
 server.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
+console.log("Cloudinary environment check:", {
+  cloudName: Boolean(process.env.CLOUDINARY_CLOUD_NAME),
+  apiKey: Boolean(process.env.CLOUDINARY_API_KEY),
+  apiSecret: Boolean(process.env.CLOUDINARY_API_SECRET),
+});
