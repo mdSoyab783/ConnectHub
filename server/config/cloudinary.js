@@ -7,12 +7,4 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const config = cloudinary.config();
-
-console.log("Cloudinary SDK configuration:", {
-  cloudNameConfigured: Boolean(config.cloud_name),
-  apiKeyConfigured: Boolean(config.api_key),
-  apiSecretConfigured: Boolean(config.api_secret),
-});
-
 module.exports = cloudinary;
