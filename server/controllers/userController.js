@@ -1,8 +1,9 @@
-const fs = require("fs");
-const processImage = require("../utils/imageProcessor");
+
+const uploadImage = require("../utils/imageProcessor");
+const deleteCloudinaryImage = require("../utils/deleteCloudinaryImage");
 const User = require("../models/User");
-const path = require("path");
 const createNotification = require("../utils/createNotification");
+
 // ========================================
 // Get Logged-in User Profile
 // ========================================
@@ -128,26 +129,25 @@ const followUser = async (req, res) => {
 
     await currentUser.save();
     await targetUser.save();
-    const io = req.app.get("io");
-const onlineUsers = req.app.get("onlineUsers");
 
-await createNotification({
-  recipient: targetUser._id,
-  sender: currentUser._id,
-  type: "follow",
-  io,
-  onlineUsers,
-});
+    const io = req.app.get("io");
+    const onlineUsers = req.app.get("onlineUsers");
+
+    await createNotification({
+      recipient: targetUser._id,
+      sender: currentUser._id,
+      type: "follow",
+      io,
+      onlineUsers,
+    });
+
     res.status(200).json({
       success: true,
       message: "User followed successfully",
-
       followers: targetUser.followers.length,
       following: currentUser.following.length,
-
       isFollowing: true,
     });
-
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -155,6 +155,7 @@ await createNotification({
     });
   }
 };
+
 // ========================================
 // Unfollow User
 // ========================================
@@ -201,13 +202,10 @@ const unfollowUser = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "User unfollowed successfully",
-
       followers: targetUser.followers.length,
       following: currentUser.following.length,
-
       isFollowing: false,
     });
-
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -215,6 +213,7 @@ const unfollowUser = async (req, res) => {
     });
   }
 };
+
 // ========================================
 // Get Followers
 // ========================================
@@ -235,7 +234,6 @@ const getFollowers = async (req, res) => {
       count: user.followers.length,
       followers: user.followers,
     });
-
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -243,6 +241,7 @@ const getFollowers = async (req, res) => {
     });
   }
 };
+
 // ========================================
 // Get Following
 // ========================================
@@ -263,7 +262,6 @@ const getFollowing = async (req, res) => {
       count: user.following.length,
       following: user.following,
     });
-
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -271,12 +269,12 @@ const getFollowing = async (req, res) => {
     });
   }
 };
+
 // ========================================
 // Get Public User Profile
 // ========================================
 const getUserProfile = async (req, res) => {
   try {
-
     const user = await User.findById(req.params.id)
       .select("-password -email")
       .populate("followers", "_id")
@@ -306,7 +304,6 @@ const getUserProfile = async (req, res) => {
 
     res.status(200).json({
       success: true,
-
       profile: {
         _id: user._id,
         fullName: user.fullName,
@@ -320,31 +317,27 @@ const getUserProfile = async (req, res) => {
         education: user.education,
         experience: user.experience,
         projects: user.projects,
-
         followers: user.followers.length,
         following: user.following.length,
-
         isFollowing,
-
         posts: totalPosts,
-
         createdAt: user.createdAt,
       },
     });
-
   } catch (error) {
-
     res.status(500).json({
       success: false,
       message: error.message,
     });
-
   }
 };
+
 // ========================================
 // Upload Profile Image
 // ========================================
 const uploadProfileImage = async (req, res) => {
+  let uploadedImage = null;
+
   try {
     if (!req.file) {
       return res.status(400).json({
@@ -355,43 +348,59 @@ const uploadProfileImage = async (req, res) => {
 
     const user = await User.findById(req.user._id);
 
-    // Delete previous profile image (optional, but recommended)
-    if (user.profileImage) {
-      const oldImage = path.join(__dirname, "..", user.profileImage);
-
-      if (fs.existsSync(oldImage)) {
-        fs.unlinkSync(oldImage);
-      }
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
     }
 
-    const optimizedImage = await processImage(
-      req.file.path,
-      path.join(__dirname, "../uploads/profile"),
+    const oldImage = user.profileImage;
+
+    uploadedImage = await uploadImage(
+      req.file.buffer,
+      "profile",
       300,
       300
     );
 
-    user.profileImage = optimizedImage;
+    user.profileImage = uploadedImage.url;
 
-    await user.save();
+    try {
+      await user.save();
+    } catch (saveError) {
+      await deleteCloudinaryImage(uploadedImage.url);
+      throw saveError;
+    }
+
+    // Delete the previous image only after the new image is saved.
+    if (oldImage && oldImage !== user.profileImage) {
+      await deleteCloudinaryImage(oldImage);
+    }
 
     res.status(200).json({
       success: true,
       message: "Profile image uploaded successfully",
       profileImage: user.profileImage,
     });
-
   } catch (error) {
+    if (uploadedImage && !uploadedImage.url) {
+      console.error("Profile image upload failed:", error);
+    }
+
     res.status(500).json({
       success: false,
       message: error.message,
     });
   }
 };
+
 // ========================================
 // Upload Cover Image
 // ========================================
 const uploadCoverImage = async (req, res) => {
+  let uploadedImage = null;
+
   try {
     if (!req.file) {
       return res.status(400).json({
@@ -402,31 +411,41 @@ const uploadCoverImage = async (req, res) => {
 
     const user = await User.findById(req.user._id);
 
-    if (user.coverImage) {
-      const oldImage = path.join(__dirname, "..", user.coverImage);
-
-      if (fs.existsSync(oldImage)) {
-        fs.unlinkSync(oldImage);
-      }
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
     }
 
-    const optimizedImage = await processImage(
-      req.file.path,
-      path.join(__dirname, "../uploads/cover"),
+    const oldImage = user.coverImage;
+
+    uploadedImage = await uploadImage(
+      req.file.buffer,
+      "cover",
       1200,
       400
     );
 
-    user.coverImage = optimizedImage;
+    user.coverImage = uploadedImage.url;
 
-    await user.save();
+    try {
+      await user.save();
+    } catch (saveError) {
+      await deleteCloudinaryImage(uploadedImage.url);
+      throw saveError;
+    }
+
+    // Delete the previous image only after the new image is saved.
+    if (oldImage && oldImage !== user.coverImage) {
+      await deleteCloudinaryImage(oldImage);
+    }
 
     res.status(200).json({
       success: true,
       message: "Cover image uploaded successfully",
       coverImage: user.coverImage,
     });
-
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -434,6 +453,7 @@ const uploadCoverImage = async (req, res) => {
     });
   }
 };
+
 // ======================================
 // Search Users
 // ======================================
@@ -471,12 +491,12 @@ const searchUsers = async (req, res) => {
     });
   }
 };
+
 // ========================================
 // Suggested Users
 // ========================================
 const getSuggestedUsers = async (req, res) => {
   try {
-
     const currentUser = await User.findById(req.user._id);
 
     const excludeUsers = [
@@ -489,25 +509,21 @@ const getSuggestedUsers = async (req, res) => {
         $nin: excludeUsers,
       },
     })
-      .select(
-        "fullName username profileImage bio"
-      )
+      .select("fullName username profileImage bio")
       .limit(5);
 
     res.status(200).json({
       success: true,
       users,
     });
-
   } catch (error) {
-
     res.status(500).json({
       success: false,
       message: error.message,
     });
-
   }
 };
+
 // ========================================
 // Export Controllers
 // ========================================

@@ -1,6 +1,9 @@
 const Post = require("../models/Post");
 const asyncHandler = require("../middleware/asyncHandler");
 const createNotification = require("../utils/createNotification");
+const uploadImage = require("../utils/imageProcessor");
+const deleteCloudinaryImage = require("../utils/deleteCloudinaryImage");
+
 // ===================================
 // Create Post
 // ===================================
@@ -14,24 +17,48 @@ const createPost = asyncHandler(async (req, res) => {
     });
   }
 
-  const post = await Post.create({
-    user: req.user._id,
-    caption: caption ? caption.trim() : "",
-    image: req.file ? `/uploads/posts/${req.file.filename}` : "",
-  });
+  let uploadedImage = null;
 
-  const populatedPost = await Post.findById(post._id).populate(
-    "user",
-    "fullName username profileImage"
-  );
-const io = req.app.get("io");
+  try {
+    if (req.file) {
+      uploadedImage = await uploadImage(req.file.buffer, "posts", 1200, null);
+    }
 
-io.emit("newPost", populatedPost);
-  res.status(201).json({
-    success: true,
-    message: "Post created successfully",
-    post: populatedPost,
-  });
+    let post;
+
+    try {
+      post = await Post.create({
+        user: req.user._id,
+        caption: caption ? caption.trim() : "",
+        image: uploadedImage ? uploadedImage.url : "",
+      });
+    } catch (databaseError) {
+      if (uploadedImage) {
+        await deleteCloudinaryImage(uploadedImage.url);
+      }
+
+      throw databaseError;
+    }
+
+    const populatedPost = await Post.findById(post._id).populate(
+      "user",
+      "fullName username profileImage",
+    );
+
+    const io = req.app.get("io");
+
+    if (io) {
+      io.emit("newPost", populatedPost);
+    }
+
+    res.status(201).json({
+      success: true,
+      message: "Post created successfully",
+      post: populatedPost,
+    });
+  } catch (error) {
+    throw error;
+  }
 });
 
 // ===================================
@@ -76,7 +103,7 @@ const getAllPosts = asyncHandler(async (req, res) => {
 const getPostById = asyncHandler(async (req, res) => {
   const post = await Post.findById(req.params.id).populate(
     "user",
-    "fullName username profileImage bio"
+    "fullName username profileImage bio",
   );
 
   if (!post) {
@@ -107,7 +134,6 @@ const updatePost = asyncHandler(async (req, res) => {
     });
   }
 
-  // Check ownership
   if (post.user.toString() !== req.user._id.toString()) {
     return res.status(403).json({
       success: false,
@@ -121,7 +147,7 @@ const updatePost = asyncHandler(async (req, res) => {
 
   const updatedPost = await Post.findById(post._id).populate(
     "user",
-    "fullName username profileImage"
+    "fullName username profileImage",
   );
 
   res.status(200).json({
@@ -144,7 +170,6 @@ const deletePost = asyncHandler(async (req, res) => {
     });
   }
 
-  // Check ownership
   if (post.user.toString() !== req.user._id.toString()) {
     return res.status(403).json({
       success: false,
@@ -152,7 +177,14 @@ const deletePost = asyncHandler(async (req, res) => {
     });
   }
 
+  const imageUrl = post.image;
+
   await post.deleteOne();
+
+  // Delete Cloudinary image after successful database deletion.
+  if (imageUrl) {
+    await deleteCloudinaryImage(imageUrl);
+  }
 
   res.status(200).json({
     success: true,
@@ -174,26 +206,25 @@ const toggleLike = asyncHandler(async (req, res) => {
   }
 
   const alreadyLiked = post.likes.some(
-    (id) => id.toString() === req.user._id.toString()
+    (id) => id.toString() === req.user._id.toString(),
   );
 
   const io = req.app.get("io");
   const onlineUsers = req.app.get("onlineUsers");
 
-  // ===============================
-  // Unlike
-  // ===============================
   if (alreadyLiked) {
     post.likes = post.likes.filter(
-      (id) => id.toString() !== req.user._id.toString()
+      (id) => id.toString() !== req.user._id.toString(),
     );
 
     await post.save();
 
-    io.emit("postLiked", {
-      postId: post._id,
-      likes: post.likes,
-    });
+    if (io) {
+      io.emit("postLiked", {
+        postId: post._id,
+        likes: post.likes,
+      });
+    }
 
     return res.status(200).json({
       success: true,
@@ -202,17 +233,16 @@ const toggleLike = asyncHandler(async (req, res) => {
     });
   }
 
-  // ===============================
-  // Like
-  // ===============================
   post.likes.push(req.user._id);
 
   await post.save();
 
-  io.emit("postLiked", {
-    postId: post._id,
-    likes: post.likes,
-  });
+  if (io) {
+    io.emit("postLiked", {
+      postId: post._id,
+      likes: post.likes,
+    });
+  }
 
   await createNotification({
     recipient: post.user,
@@ -229,6 +259,7 @@ const toggleLike = asyncHandler(async (req, res) => {
     totalLikes: post.likes.length,
   });
 });
+
 // ===================================
 // Get Posts By User
 // ===================================
@@ -245,6 +276,7 @@ const getPostsByUser = asyncHandler(async (req, res) => {
     posts,
   });
 });
+
 module.exports = {
   createPost,
   getAllPosts,
@@ -252,5 +284,5 @@ module.exports = {
   updatePost,
   deletePost,
   toggleLike,
-  getPostsByUser
+  getPostsByUser,
 };

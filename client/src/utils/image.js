@@ -1,3 +1,4 @@
+
 const BASE_URL =
   import.meta.env.VITE_SOCKET_URL ||
   "http://localhost:3000";
@@ -7,5 +8,11 @@ export const getImageUrl = (imagePath) => {
     return "/default-avatar.png";
   }
 
+  // Cloudinary and other absolute URLs
+  if (/^https?:\/\//i.test(imagePath)) {
+    return imagePath;
+  }
+
+  // Older local upload paths
   return `${BASE_URL}/${imagePath.replace(/^\/+/, "")}`;
 };

@@ -1,27 +1,20 @@
+
 const Message = require("../models/Message");
 const Conversation = require("../models/Conversation");
 const createNotification = require("../utils/createNotification");
-
+const uploadImage = require("../utils/imageProcessor");
+const deleteCloudinaryImage = require("../utils/deleteCloudinaryImage");
 
 /* =====================================================
    SEND MESSAGE
 ===================================================== */
 
 exports.sendMessage = async (req, res) => {
+  let uploadedImage = null;
+  let messageCreated = false;
+
   try {
-    const {
-      conversationId,
-      text,
-      replyTo,
-    } = req.body;
-
-    const image = req.file
-      ? `/uploads/messages/${req.file.filename}`
-      : "";
-
-    /* ==========================================
-       VALIDATION
-    ========================================== */
+    const { conversationId, text, replyTo } = req.body;
 
     if (!conversationId) {
       return res.status(400).json({
@@ -30,23 +23,14 @@ exports.sendMessage = async (req, res) => {
       });
     }
 
-    if (!text?.trim() && !image) {
+    if (!text?.trim() && !req.file) {
       return res.status(400).json({
         success: false,
-        message:
-          "Message must contain text or an image",
+        message: "Message must contain text or an image",
       });
     }
 
-
-    /* ==========================================
-       FIND CONVERSATION
-    ========================================== */
-
-    const conversation =
-      await Conversation.findById(
-        conversationId
-      );
+    const conversation = await Conversation.findById(conversationId);
 
     if (!conversation) {
       return res.status(404).json({
@@ -55,27 +39,33 @@ exports.sendMessage = async (req, res) => {
       });
     }
 
+    // Upload image to Cloudinary
+    if (req.file) {
+      uploadedImage = await uploadImage(
+        req.file.buffer,
+        "messages",
+        1200,
+        null
+      );
+    }
 
-    /* ==========================================
-       REPLY MESSAGE
-    ========================================== */
-
+    // Validate reply
     let replyMessage = null;
 
     if (replyTo) {
-      replyMessage =
-        await Message.findById(
-          replyTo
-        ).populate(
-          "sender",
-          "fullName username profileImage"
-        );
+      replyMessage = await Message.findById(replyTo).populate(
+        "sender",
+        "fullName username profileImage"
+      );
 
       if (!replyMessage) {
+        if (uploadedImage) {
+          await deleteCloudinaryImage(uploadedImage.url);
+        }
+
         return res.status(400).json({
           success: false,
-          message:
-            "Reply message not found",
+          message: "Reply message not found",
         });
       }
 
@@ -83,301 +73,168 @@ exports.sendMessage = async (req, res) => {
         replyMessage.conversation.toString() !==
         conversationId.toString()
       ) {
+        if (uploadedImage) {
+          await deleteCloudinaryImage(uploadedImage.url);
+        }
+
         return res.status(400).json({
           success: false,
-          message:
-            "Reply message does not belong to this conversation",
+          message: "Reply message does not belong to this conversation",
         });
       }
     }
 
+    const message = await Message.create({
+      conversation: conversationId,
+      sender: req.user._id,
+      text: text?.trim() || "",
+      image: uploadedImage?.url || "",
+      replyTo: replyMessage ? replyMessage._id : null,
+      replyPreview: replyMessage
+        ? {
+            text: replyMessage.text || "",
+            image: replyMessage.image || "",
+            senderName:
+              replyMessage.sender?.fullName ||
+              replyMessage.sender?.username ||
+              "User",
+          }
+        : {
+            text: "",
+            image: "",
+            senderName: "",
+          },
+    });
 
-    /* ==========================================
-       CREATE MESSAGE
-    ========================================== */
-
-    const message =
-      await Message.create({
-        conversation:
-          conversationId,
-
-        sender:
-          req.user._id,
-
-        text:
-          text?.trim() || "",
-
-        image,
-
-        replyTo:
-          replyMessage
-            ? replyMessage._id
-            : null,
-
-        replyPreview:
-          replyMessage
-            ? {
-                text:
-                  replyMessage.text ||
-                  "",
-
-                image:
-                  replyMessage.image ||
-                  "",
-
-                senderName:
-                  replyMessage.sender
-                    ?.fullName ||
-                  replyMessage.sender
-                    ?.username ||
-                  "User",
-              }
-            : {
-                text: "",
-                image: "",
-                senderName: "",
-              },
-      });
-
-
-    /* ==========================================
-       POPULATE MESSAGE
-    ========================================== */
+    messageCreated = true;
 
     await message.populate([
       {
         path: "sender",
-        select:
-          "fullName username profileImage",
+        select: "fullName username profileImage",
       },
-
       {
         path: "replyTo",
         populate: {
           path: "sender",
-          select:
-            "fullName username profileImage",
+          select: "fullName username profileImage",
         },
       },
     ]);
 
-
-    /* ==========================================
-       UPDATE CONVERSATION
-    ========================================== */
-
-    conversation.lastMessage =
-      message._id;
-
+    // Update conversation
+    conversation.lastMessage = message._id;
     await conversation.save();
 
+    // Find recipient
+    const recipient = conversation.participants.find(
+      (participant) =>
+        participant.toString() !== req.user._id.toString()
+    );
 
-    /* ==========================================
-       FIND RECIPIENT
-    ========================================== */
+    const io = req.app.get("io");
+    const onlineUsers = req.app.get("onlineUsers");
 
-    const recipient =
-      conversation.participants.find(
-        (participant) =>
-          participant.toString() !==
-          req.user._id.toString()
-      );
-
-
-    /* ==========================================
-       SOCKET + ONLINE USER
-    ========================================== */
-
-    const io =
-      req.app.get("io");
-
-    const onlineUsers =
-      req.app.get(
-        "onlineUsers"
-      );
-
-
-    let isRecipientOnline = false;
-
-    if (
-      recipient &&
-      onlineUsers
-    ) {
-      const recipientSocket =
-        onlineUsers.get(
-          recipient.toString()
-        );
+    // Delivery status
+    if (recipient && onlineUsers) {
+      const recipientSocket = onlineUsers.get(recipient.toString());
 
       if (recipientSocket) {
-        isRecipientOnline = true;
-
         message.delivered = true;
-
         await message.save();
 
-
-        /* Delivered */
-
         if (io) {
-          io.to(recipientSocket).emit(
-            "messageDelivered",
-            {
-              messageId:
-                message._id,
-            }
-          );
+          io.to(recipientSocket).emit("messageDelivered", {
+            messageId: message._id,
+          });
         }
       }
     }
 
-
-    /* ==========================================
-       NOTIFICATION
-    ========================================== */
-
-    if (
-      recipient &&
-      recipient.toString() !==
-        req.user._id.toString()
-    ) {
+    // Notification
+    if (recipient) {
       try {
         await createNotification({
           recipient,
           sender: req.user._id,
           type: "message",
-          message:
-            message.text ||
-            "Sent you an image",
-          referenceId:
-            conversationId,
+          message: message.text || "Sent you an image",
+          referenceId: conversationId,
         });
       } catch (notificationError) {
-        console.log(
-          "Notification Error:",
-          notificationError
-        );
+        console.log("Notification Error:", notificationError);
       }
     }
 
-
-    /* ==========================================
-       UNREAD SOCKET
-    ========================================== */
-
-    if (
-      recipient &&
-      onlineUsers &&
-      io
-    ) {
-      const recipientSocket =
-        onlineUsers.get(
-          recipient.toString()
-        );
+    // Unread message socket
+    if (recipient && onlineUsers && io) {
+      const recipientSocket = onlineUsers.get(recipient.toString());
 
       if (recipientSocket) {
-        io.to(
-          recipientSocket
-        ).emit(
-          "newUnreadMessage",
-          {
-            conversationId:
-              conversation._id,
-
-            messageId:
-              message._id,
-          }
-        );
+        io.to(recipientSocket).emit("newUnreadMessage", {
+          conversationId: conversation._id,
+          messageId: message._id,
+        });
       }
     }
 
-
-    /* ==========================================
-       REAL-TIME MESSAGE
-    ========================================== */
-
+    // Real-time message
     if (io) {
-      io.to(
-        conversationId.toString()
-      ).emit(
-        "receiveMessage",
-        message
-      );
+      io.to(conversationId.toString()).emit("receiveMessage", message);
     }
-
-
-    /* ==========================================
-       RESPONSE
-    ========================================== */
 
     res.status(201).json({
       success: true,
-
       message,
     });
   } catch (error) {
-    console.error(error);
+    console.error("Send Message Error:", error);
+
+    // Only clean up if the database message was never created.
+    if (uploadedImage && !messageCreated) {
+      await deleteCloudinaryImage(uploadedImage.url);
+    }
 
     res.status(500).json({
       success: false,
-
-      message:
-        error.message,
+      message: error.message,
     });
   }
 };
-
 
 /* =====================================================
    GET MESSAGES
 ===================================================== */
 
-exports.getMessages = async (
-  req,
-  res
-) => {
+exports.getMessages = async (req, res) => {
   try {
-    const {
-      conversationId,
-    } = req.params;
+    const { conversationId } = req.params;
 
-    const conversation =
-      await Conversation.findById(
-        conversationId
-      );
+    const conversation = await Conversation.findById(conversationId);
 
     if (!conversation) {
       return res.status(404).json({
         success: false,
-        message:
-          "Conversation not found",
+        message: "Conversation not found",
       });
     }
 
-    const messages =
-      await Message.find({
-        conversation:
-          conversationId,
+    const messages = await Message.find({
+      conversation: conversationId,
+    })
+      .populate("sender", "fullName username profileImage")
+      .populate({
+        path: "replyTo",
+        populate: {
+          path: "sender",
+          select: "fullName username profileImage",
+        },
       })
-        .populate(
-          "sender",
-          "fullName username profileImage"
-        )
-        .populate({
-          path: "replyTo",
-          populate: {
-            path: "sender",
-            select:
-              "fullName username profileImage",
-          },
-        })
-        .populate({
-          path: "reactions.user",
-          select:
-            "fullName username profileImage",
-        })
-        .sort({
-          createdAt: 1,
-        });
+      .populate({
+        path: "reactions.user",
+        select: "fullName username profileImage",
+      })
+      .sort({ createdAt: 1 });
 
     res.json({
       success: true,
@@ -388,50 +245,30 @@ exports.getMessages = async (
 
     res.status(500).json({
       success: false,
-      message:
-        error.message,
+      message: error.message,
     });
   }
 };
-
 
 /* =====================================================
    MARK MESSAGES SEEN
 ===================================================== */
 
-exports.markMessagesSeen = async (
-  req,
-  res
-) => {
+exports.markMessagesSeen = async (req, res) => {
   try {
-    const {
-      conversationId,
-    } = req.params;
+    const { conversationId } = req.params;
+    const userId = req.user._id;
 
-    const userId =
-      req.user._id;
-
-    const messages =
-      await Message.find({
-        conversation:
-          conversationId,
-
-        sender: {
-          $ne: userId,
-        },
-
-        seen: false,
-      });
+    const messages = await Message.find({
+      conversation: conversationId,
+      sender: { $ne: userId },
+      seen: false,
+    });
 
     await Message.updateMany(
       {
-        conversation:
-          conversationId,
-
-        sender: {
-          $ne: userId,
-        },
-
+        conversation: conversationId,
+        sender: { $ne: userId },
         seen: false,
       },
       {
@@ -442,25 +279,15 @@ exports.markMessagesSeen = async (
       }
     );
 
-
-    const io =
-      req.app.get("io");
-
+    const io = req.app.get("io");
 
     if (io) {
       for (const message of messages) {
-        io.to(
-          conversationId.toString()
-        ).emit(
-          "messageSeen",
-          {
-            messageId:
-              message._id,
-          }
-        );
+        io.to(conversationId.toString()).emit("messageSeen", {
+          messageId: message._id,
+        });
       }
     }
-
 
     res.json({
       success: true,
@@ -470,54 +297,35 @@ exports.markMessagesSeen = async (
 
     res.status(500).json({
       success: false,
-      message:
-        error.message,
+      message: error.message,
     });
   }
 };
-
 
 /* =====================================================
    UNREAD COUNTS
 ===================================================== */
 
-exports.getUnreadCounts = async (
-  req,
-  res
-) => {
+exports.getUnreadCounts = async (req, res) => {
   try {
-    const userId =
-      req.user._id;
+    const userId = req.user._id;
 
-    const conversations =
-      await Conversation.find({
-        participants:
-          userId,
-      });
+    const conversations = await Conversation.find({
+      participants: userId,
+    });
 
     const unread = [];
 
-    for (
-      const conversation of
-        conversations
-    ) {
-      const count =
-        await Message.countDocuments({
-          conversation:
-            conversation._id,
-
-          sender: {
-            $ne: userId,
-          },
-
-          isRead: false,
-        });
+    for (const conversation of conversations) {
+      const count = await Message.countDocuments({
+        conversation: conversation._id,
+        sender: { $ne: userId },
+        isRead: false,
+      });
 
       if (count > 0) {
         unread.push({
-          _id:
-            conversation._id,
-
+          _id: conversation._id,
           count,
         });
       }
@@ -525,7 +333,6 @@ exports.getUnreadCounts = async (
 
     res.json({
       success: true,
-
       unread,
     });
   } catch (error) {
@@ -533,85 +340,67 @@ exports.getUnreadCounts = async (
 
     res.status(500).json({
       success: false,
-      message:
-        error.message,
+      message: error.message,
     });
   }
 };
-
 
 /* =====================================================
    DELETE MESSAGE
 ===================================================== */
 
-exports.deleteMessage = async (
-  req,
-  res
-) => {
+exports.deleteMessage = async (req, res) => {
   try {
-    const {
-      messageId,
-    } = req.params;
+    const { messageId } = req.params;
 
-    const message =
-      await Message.findById(
-        messageId
-      );
+    const message = await Message.findById(messageId);
 
     if (!message) {
       return res.status(404).json({
         success: false,
-        message:
-          "Message not found",
+        message: "Message not found",
       });
     }
 
-
-    if (
-      message.sender.toString() !==
-      req.user._id.toString()
-    ) {
+    if (message.sender.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         success: false,
-        message:
-          "You can only delete your own messages",
+        message: "You can only delete your own messages",
       });
     }
 
+    const conversationId = message.conversation;
+    const imageUrl = message.image;
 
-    const conversationId =
-      message.conversation;
+    await Message.findByIdAndDelete(messageId);
 
+    // Check whether another message or reply preview still uses this image.
+    if (imageUrl) {
+      const imageStillInUse = await Message.exists({
+        _id: { $ne: messageId },
+        $or: [
+          { image: imageUrl },
+          { "replyPreview.image": imageUrl },
+        ],
+      });
 
-    await Message.findByIdAndDelete(
-      messageId
-    );
-
-
-    const io =
-      req.app.get("io");
-
-
-    if (io) {
-      io.to(
-        conversationId.toString()
-      ).emit(
-        "messageDeleted",
-        {
-          messageId,
-
-          conversationId,
-        }
-      );
+      if (!imageStillInUse) {
+        await deleteCloudinaryImage(imageUrl);
+      }
     }
 
+    const io = req.app.get("io");
+
+    if (io) {
+      io.to(conversationId.toString()).emit("messageDeleted", {
+        messageId,
+        conversationId,
+      });
+    }
 
     res.json({
       success: true,
-
-      message:
-        "Message deleted successfully",
-
+      message: "Message deleted successfully",
       messageId,
     });
   } catch (error) {
@@ -619,114 +408,72 @@ exports.deleteMessage = async (
 
     res.status(500).json({
       success: false,
-      message:
-        error.message,
+      message: error.message,
     });
   }
 };
-
 
 /* =====================================================
    EDIT MESSAGE
 ===================================================== */
 
-exports.editMessage = async (
-  req,
-  res
-) => {
+exports.editMessage = async (req, res) => {
   try {
-    const {
-      messageId,
-    } = req.params;
+    const { messageId } = req.params;
+    const { text } = req.body;
 
-    const {
-      text,
-    } = req.body;
-
-
-    if (
-      !text ||
-      !text.trim()
-    ) {
+    if (!text || !text.trim()) {
       return res.status(400).json({
         success: false,
-        message:
-          "Message text is required",
+        message: "Message text is required",
       });
     }
 
-
-    const message =
-      await Message.findById(
-        messageId
-      );
+    const message = await Message.findById(messageId);
 
     if (!message) {
       return res.status(404).json({
         success: false,
-        message:
-          "Message not found",
+        message: "Message not found",
       });
     }
 
-
-    if (
-      message.sender.toString() !==
-      req.user._id.toString()
-    ) {
+    if (message.sender.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         success: false,
-        message:
-          "You can only edit your own messages",
+        message: "You can only edit your own messages",
       });
     }
 
-
-    message.text =
-      text.trim();
-
+    message.text = text.trim();
     message.edited = true;
 
     await message.save();
 
-
     await message.populate([
       {
         path: "sender",
-        select:
-          "fullName username profileImage",
+        select: "fullName username profileImage",
       },
-
       {
         path: "replyTo",
         populate: {
           path: "sender",
-          select:
-            "fullName username profileImage",
+          select: "fullName username profileImage",
         },
       },
     ]);
 
-
-    const io =
-      req.app.get("io");
-
+    const io = req.app.get("io");
 
     if (io) {
-      io.to(
-        message.conversation.toString()
-      ).emit(
-        "messageEdited",
-        {
-          message,
-        }
-      );
+      io.to(message.conversation.toString()).emit("messageEdited", {
+        message,
+      });
     }
-
 
     res.json({
       success: true,
-
       message,
     });
   } catch (error) {
@@ -734,87 +481,52 @@ exports.editMessage = async (
 
     res.status(500).json({
       success: false,
-      message:
-        error.message,
+      message: error.message,
     });
   }
 };
-
 
 /* =====================================================
    REACT TO MESSAGE
 ===================================================== */
 
-exports.reactToMessage = async (
-  req,
-  res
-) => {
+exports.reactToMessage = async (req, res) => {
   try {
-    const {
-      messageId,
-    } = req.params;
+    const { messageId } = req.params;
+    const { emoji } = req.body;
 
-    const {
-      emoji,
-    } = req.body;
-
-    if (
-      !emoji ||
-      !emoji.trim()
-    ) {
+    if (!emoji || !emoji.trim()) {
       return res.status(400).json({
         success: false,
-        message:
-          "Reaction emoji is required",
+        message: "Reaction emoji is required",
       });
     }
 
-    const message =
-      await Message.findById(
-        messageId
-      );
+    const message = await Message.findById(messageId);
 
     if (!message) {
       return res.status(404).json({
         success: false,
-        message:
-          "Message not found",
+        message: "Message not found",
       });
     }
 
-    const userId =
-      req.user._id.toString();
+    const userId = req.user._id.toString();
 
-    const existingReaction =
-      message.reactions.find(
-        (reaction) =>
-          reaction.user.toString() ===
-          userId
+    const existingReaction = message.reactions.find(
+      (reaction) => reaction.user.toString() === userId
+    );
+
+    if (existingReaction && existingReaction.emoji === emoji.trim()) {
+      message.reactions = message.reactions.filter(
+        (reaction) => reaction.user.toString() !== userId
       );
-
-    if (
-      existingReaction &&
-      existingReaction.emoji ===
-        emoji.trim()
-    ) {
-      message.reactions =
-        message.reactions.filter(
-          (reaction) =>
-            reaction.user.toString() !==
-            userId
-        );
-    } else if (
-      existingReaction
-    ) {
-      existingReaction.emoji =
-        emoji.trim();
+    } else if (existingReaction) {
+      existingReaction.emoji = emoji.trim();
     } else {
       message.reactions.push({
-        user:
-          req.user._id,
-
-        emoji:
-          emoji.trim(),
+        user: req.user._id,
+        emoji: emoji.trim(),
       });
     }
 
@@ -822,364 +534,178 @@ exports.reactToMessage = async (
 
     await message.populate({
       path: "reactions.user",
-      select:
-        "fullName username profileImage",
+      select: "fullName username profileImage",
     });
 
-    const io =
-      req.app.get("io");
+    const io = req.app.get("io");
 
     if (io) {
-      io.to(
-        message.conversation.toString()
-      ).emit(
-        "messageReaction",
-        {
-          messageId:
-            message._id,
-
-          conversationId:
-            message.conversation,
-
-          reactions:
-            message.reactions,
-        }
-      );
+      io.to(message.conversation.toString()).emit("messageReaction", {
+        messageId: message._id,
+        conversationId: message.conversation,
+        reactions: message.reactions,
+      });
     }
 
     res.json({
       success: true,
       message,
     });
-
   } catch (error) {
-
-    console.error(
-      "Reaction Error:",
-      error
-    );
+    console.error("Reaction Error:", error);
 
     res.status(500).json({
       success: false,
-      message:
-        error.message,
+      message: error.message,
     });
   }
 };
-
 
 /* =====================================================
    FORWARD MESSAGE
 ===================================================== */
 
-exports.forwardMessage = async (
-  req,
-  res
-) => {
+exports.forwardMessage = async (req, res) => {
   try {
-    const {
-      messageId,
-    } = req.params;
-
-    const {
-      targetConversationId,
-    } = req.body;
-
-
-    /* ==========================================
-       VALIDATION
-    ========================================== */
+    const { messageId } = req.params;
+    const { targetConversationId } = req.body;
 
     if (!targetConversationId) {
       return res.status(400).json({
         success: false,
-        message:
-          "Target conversation is required",
+        message: "Target conversation is required",
       });
     }
 
-
-    /* ==========================================
-       FIND ORIGINAL MESSAGE
-    ========================================== */
-
-    const originalMessage =
-      await Message.findById(
-        messageId
-      ).populate(
-        "sender",
-        "fullName username profileImage"
-      );
+    const originalMessage = await Message.findById(messageId).populate(
+      "sender",
+      "fullName username profileImage"
+    );
 
     if (!originalMessage) {
       return res.status(404).json({
         success: false,
-        message:
-          "Original message not found",
+        message: "Original message not found",
       });
     }
 
-
-    /* ==========================================
-       FIND TARGET CONVERSATION
-    ========================================== */
-
-    const targetConversation =
-      await Conversation.findById(
-        targetConversationId
-      );
+    const targetConversation = await Conversation.findById(
+      targetConversationId
+    );
 
     if (!targetConversation) {
       return res.status(404).json({
         success: false,
-        message:
-          "Target conversation not found",
+        message: "Target conversation not found",
       });
     }
-
-
-    /* ==========================================
-       CHECK USER ACCESS
-    ========================================== */
 
     const currentUserIsParticipant =
       targetConversation.participants.some(
         (participant) =>
-          participant.toString() ===
-          req.user._id.toString()
+          participant.toString() === req.user._id.toString()
       );
 
     if (!currentUserIsParticipant) {
       return res.status(403).json({
         success: false,
-        message:
-          "You are not a participant in this conversation",
+        message: "You are not a participant in this conversation",
       });
     }
 
-
-    /* ==========================================
-       CREATE FORWARDED MESSAGE
-    ========================================== */
-
-    const forwardedMessage =
-      await Message.create({
-        conversation:
-          targetConversationId,
-
-        sender:
-          req.user._id,
-
-        text:
-          originalMessage.text ||
-          "",
-
-        image:
-          originalMessage.image ||
-          "",
-
-        delivered:
-          false,
-
-        seen:
-          false,
-
-        isRead:
-          false,
-
-        edited:
-          false,
-
-        forwarded:
-          true,
-
-        replyTo:
-          null,
-
-        replyPreview: {
-          text: "",
-          image: "",
-          senderName: "",
-        },
-      });
-
-
-    /* ==========================================
-       POPULATE FORWARDED MESSAGE
-    ========================================== */
+    // Reuse the original Cloudinary URL. Do not upload a duplicate.
+    const forwardedMessage = await Message.create({
+      conversation: targetConversationId,
+      sender: req.user._id,
+      text: originalMessage.text || "",
+      image: originalMessage.image || "",
+      delivered: false,
+      seen: false,
+      isRead: false,
+      edited: false,
+      forwarded: true,
+      replyTo: null,
+      replyPreview: {
+        text: "",
+        image: "",
+        senderName: "",
+      },
+    });
 
     await forwardedMessage.populate({
       path: "sender",
-      select:
-        "fullName username profileImage",
+      select: "fullName username profileImage",
     });
 
-
-    /* ==========================================
-       UPDATE TARGET CONVERSATION
-    ========================================== */
-
-    targetConversation.lastMessage =
-      forwardedMessage._id;
-
+    targetConversation.lastMessage = forwardedMessage._id;
     await targetConversation.save();
 
+    const recipient = targetConversation.participants.find(
+      (participant) =>
+        participant.toString() !== req.user._id.toString()
+    );
 
-    /* ==========================================
-       FIND RECIPIENT
-    ========================================== */
+    const io = req.app.get("io");
+    const onlineUsers = req.app.get("onlineUsers");
 
-    const recipient =
-      targetConversation.participants.find(
-        (participant) =>
-          participant.toString() !==
-          req.user._id.toString()
-      );
-
-
-    /* ==========================================
-       SOCKET + ONLINE USER
-    ========================================== */
-
-    const io =
-      req.app.get("io");
-
-    const onlineUsers =
-      req.app.get(
-        "onlineUsers"
-      );
-
-
-    if (
-      recipient &&
-      onlineUsers
-    ) {
-      const recipientSocket =
-        onlineUsers.get(
-          recipient.toString()
-        );
+    if (recipient && onlineUsers) {
+      const recipientSocket = onlineUsers.get(recipient.toString());
 
       if (recipientSocket) {
-        forwardedMessage.delivered =
-          true;
-
+        forwardedMessage.delivered = true;
         await forwardedMessage.save();
 
         if (io) {
-          io.to(recipientSocket).emit(
-            "messageDelivered",
-            {
-              messageId:
-                forwardedMessage._id,
-            }
-          );
+          io.to(recipientSocket).emit("messageDelivered", {
+            messageId: forwardedMessage._id,
+          });
         }
       }
     }
 
-
-    /* ==========================================
-       REAL-TIME MESSAGE
-    ========================================== */
-
     if (io) {
-      io.to(
-        targetConversationId.toString()
-      ).emit(
+      io.to(targetConversationId.toString()).emit(
         "receiveMessage",
         forwardedMessage
       );
     }
 
-
-    /* ==========================================
-       NOTIFICATION
-    ========================================== */
-
-    if (
-      recipient &&
-      recipient.toString() !==
-        req.user._id.toString()
-    ) {
+    if (recipient) {
       try {
         await createNotification({
           recipient,
-          sender:
-            req.user._id,
-
-          type:
-            "message",
-
+          sender: req.user._id,
+          type: "message",
           message:
-            forwardedMessage.text ||
-            "Forwarded you an image",
-
-          referenceId:
-            targetConversationId,
+            forwardedMessage.text || "Forwarded you an image",
+          referenceId: targetConversationId,
         });
       } catch (notificationError) {
-        console.log(
-          "Notification Error:",
-          notificationError
-        );
+        console.log("Notification Error:", notificationError);
       }
     }
 
-
-    /* ==========================================
-       UNREAD SOCKET
-    ========================================== */
-
-    if (
-      recipient &&
-      onlineUsers &&
-      io
-    ) {
-      const recipientSocket =
-        onlineUsers.get(
-          recipient.toString()
-        );
+    if (recipient && onlineUsers && io) {
+      const recipientSocket = onlineUsers.get(recipient.toString());
 
       if (recipientSocket) {
-        io.to(
-          recipientSocket
-        ).emit(
-          "newUnreadMessage",
-          {
-            conversationId:
-              targetConversation._id,
-
-            messageId:
-              forwardedMessage._id,
-          }
-        );
+        io.to(recipientSocket).emit("newUnreadMessage", {
+          conversationId: targetConversation._id,
+          messageId: forwardedMessage._id,
+        });
       }
     }
-
-
-    /* ==========================================
-       RESPONSE
-    ========================================== */
 
     res.status(201).json({
       success: true,
-
-      message:
-        forwardedMessage,
+      message: forwardedMessage,
     });
-
   } catch (error) {
-
-    console.error(
-      "Forward Message Error:",
-      error
-    );
+    console.error("Forward Message Error:", error);
 
     res.status(500).json({
       success: false,
-
-      message:
-        error.message,
+      message: error.message,
     });
   }
 };

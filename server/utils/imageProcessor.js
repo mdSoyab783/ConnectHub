@@ -1,21 +1,19 @@
-const sharp = require("sharp");
-const fs = require("fs");
-const path = require("path");
 
-const processImage = async (
-  inputPath,
-  outputFolder,
+const sharp = require("sharp");
+const cloudinary = require("../config/cloudinary");
+
+const uploadImage = async (
+  buffer,
+  folder,
   width,
   height = null,
   quality = 80
 ) => {
-  // Ensure output folder exists
-  fs.mkdirSync(outputFolder, { recursive: true });
+  if (!buffer) {
+    throw new Error("Image buffer is required");
+  }
 
-  const fileName = `${Date.now()}.jpg`;
-  const outputPath = path.join(outputFolder, fileName);
-
-  let image = sharp(inputPath).rotate();
+  let image = sharp(buffer).rotate();
 
   if (height) {
     image = image.resize(width, height, {
@@ -29,19 +27,36 @@ const processImage = async (
     });
   }
 
-  await image
+  const optimizedBuffer = await image
     .jpeg({
       quality,
       mozjpeg: true,
     })
-    .toFile(outputPath);
+    .toBuffer();
 
-  // Delete original upload
-  if (fs.existsSync(inputPath)) {
-    fs.unlinkSync(inputPath);
-  }
+  const result = await new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder: `connecthub/${folder}`,
+        resource_type: "image",
+        format: "jpg",
+      },
+      (error, result) => {
+        if (error) {
+          return reject(error);
+        }
 
-  return `/uploads/${path.basename(outputFolder)}/${fileName}`;
+        resolve(result);
+      }
+    );
+
+    stream.end(optimizedBuffer);
+  });
+
+  return {
+    url: result.secure_url,
+    publicId: result.public_id,
+  };
 };
 
-module.exports = processImage;
+module.exports = uploadImage;
